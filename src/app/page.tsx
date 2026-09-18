@@ -4,7 +4,16 @@ import MenuSection from '@/components/MenuSection'
 
 // ─── Checkered divider ────────────────────────────────────────────────────────
 function CheckerStrip() {
-  return <div className="checker-strip w-full" aria-hidden="true" />
+  return (
+    <div
+      className="w-full h-5 z-20 relative shadow-sm"
+      style={{
+        backgroundImage: 'conic-gradient(#C1121F 90deg, #F5E6D3 90deg 180deg, #C1121F 180deg 270deg, #F5E6D3 270deg)',
+        backgroundSize: '24px 24px'
+      }}
+      aria-hidden="true"
+    />
+  )
 }
 
 // ─── Hero — solo imagen, navbar ya está fuera como flujo normal ───────────────
@@ -126,9 +135,6 @@ export default function Page() {
 
       {/* 4. Showcase "Nuestras Delicias" */}
       <NuestrasDelicias />
-
-      {/* 5. Franja ajedrezada */}
-      <CheckerStrip />
 
       {/* 6. Menú interactivo con tabs */}
       <MenuSection />
