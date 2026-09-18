@@ -24,6 +24,12 @@ export const metadata: Metadata = {
   keywords: ['hamburguesas', 'smash burger', 'loot burgers', 'combos', 'delivery'],
 }
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+}
+
 // ─── Layout ───────────────────────────────────────────────────────────────────
 export default function RootLayout({
   children,

@@ -16,22 +16,24 @@ function CheckerStrip() {
   )
 }
 
-// ─── Hero — solo imagen, navbar ya está fuera como flujo normal ───────────────
+// ─── Hero — Img ───────────────
 function Hero() {
   return (
     <section
-      className="relative w-full overflow-hidden"
-      style={{ height: 'clamp(320px, 50vh, 560px)' }}
+      className="relative w-full overflow-hidden h-[450px] md:h-[650px]"
       aria-label="Foto principal Loot Burgers"
     >
+      {/* Sombra sutil arriba para que el logo y el texto resalten */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent z-10 pointer-events-none" />
+
       <Image
         src="/Hero.jpg"
         alt="Hamburguesa Loot Burgers — jugosa y llena de sabor"
         fill
-        priority={true}
-        sizes="100vw"
+        priority
         quality={100}
-        className="object-cover object-center w-full h-full"
+        sizes="100vw"
+        className="object-cover object-[center_40%] w-full h-full"
       />
     </section>
   )
@@ -40,28 +42,48 @@ function Hero() {
 // ─── Nuestras Delicias — showcase visual de 3 burgers ─────────────────────────
 function NuestrasDelicias() {
   const burgers = [
-    { src: '/CheeseDoble.jpg', alt: 'Cheeseburger doble', rotate: '-6deg', scale: '0.88' },
-    { src: '/CrispyDoble.jpg', alt: 'Crispy Bacon doble', rotate: '0deg', scale: '1' },
-    { src: '/AmericanDoble.jpg', alt: 'American doble', rotate: '6deg', scale: '0.88' },
+    { src: '/CheeseLOOT.jpg',   alt: 'Cheeseburger doble', rotate: '-6deg', scale: '0.88' },
+    { src: '/AmericanLOOT.jpg', alt: 'American doble',     rotate: '0deg',  scale: '1'    },
+    { src: '/CrispyLOOT.jpg',  alt: 'Crispy Bacon doble', rotate: '6deg',  scale: '0.88' },
   ]
 
   return (
     <section
-      className="py-14 px-4 md:px-16"
+      className="py-10 md:py-14 px-0 md:px-16"
       style={{ backgroundColor: 'var(--cream)' }}
       aria-labelledby="delicias-heading"
     >
       {/* Título */}
       <h2
         id="delicias-heading"
-        className="text-center text-4xl md:text-5xl mb-12"
+        className="text-center text-3xl md:text-5xl mb-8 md:mb-12 px-4"
         style={{ fontFamily: 'var(--font-lilita)', color: 'var(--red)' }}
       >
         NUESTRAS DELICIAS
       </h2>
 
-      {/* Grid de 3 fotos con efecto fotográfico inclinado */}
-      <div className="flex items-center justify-center gap-4 md:gap-8">
+      {/* Mobile: scroll horizontal sin rotación */}
+      <div className="flex md:hidden overflow-x-auto gap-4 px-4 pb-4 snap-x snap-mandatory scrollbar-hide">
+        {burgers.map(({ src, alt }) => (
+          <div
+            key={src}
+            className="relative overflow-hidden rounded-2xl shadow-xl flex-none snap-center"
+            style={{ width: '72vw', height: '56vw', minWidth: '220px', minHeight: '170px' }}
+          >
+            <Image
+              src={src}
+              alt={alt}
+              fill
+              sizes="72vw"
+              quality={90}
+              className="object-cover"
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop: efecto inclinado original */}
+      <div className="hidden md:flex items-center justify-center gap-8">
         {burgers.map(({ src, alt, rotate, scale }) => (
           <div
             key={src}
@@ -69,7 +91,7 @@ function NuestrasDelicias() {
             style={{
               transform: `rotate(${rotate}) scale(${scale})`,
               width: 'clamp(180px, 28vw, 340px)',
-              height: 'clamp(220px, 34vw, 420px)',
+              height: 'clamp(220px, 34vw, 445px)',
               flexShrink: 0,
             }}
           >
@@ -77,7 +99,7 @@ function NuestrasDelicias() {
               src={src}
               alt={alt}
               fill
-              sizes="(max-width: 768px) 50vw, 30vw"
+              sizes="30vw"
               quality={95}
               className="object-cover"
             />
