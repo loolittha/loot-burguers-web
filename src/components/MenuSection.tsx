@@ -1,0 +1,336 @@
+'use client'
+
+import { useState } from 'react'
+import Image from 'next/image'
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+type Category = 'Hamburguesas' | 'Combos' | 'Adicionales'
+
+interface MenuItem {
+  id: string
+  name: string
+  description: string
+  price: number
+  category: Exclude<Category, 'Todo'>
+  image: string
+  badge?: string
+}
+
+// ─── Menu Data ────────────────────────────────────────────────────────────────
+const MENU_ITEMS: MenuItem[] = [
+  // ── Hamburguesas (sin papas) ────────────────────────────────────────────────
+  {
+    id: 'cheese-simple',
+    name: 'Cheeseburger simple',
+    description: 'Un medallón de carne y doble cheddar derretido.',
+    price: 7000,
+    category: 'Hamburguesas',
+    image: '/CheeseDoble.jpg',
+  },
+  {
+    id: 'cheese-doble',
+    name: 'Cheeseburger doble',
+    description: 'Doble medallón y triple cheddar fundido.',
+    price: 10000,
+    category: 'Hamburguesas',
+    image: '/CheeseDoble.jpg',
+    badge: '🔥 La más pedida',
+  },
+  {
+    id: 'american-simple',
+    name: 'American simple',
+    description: 'Un medallón, doble cheddar, lechuga, tomate y mayo.',
+    price: 8000,
+    category: 'Hamburguesas',
+    image: '/AmericanDoble.jpg',
+  },
+  {
+    id: 'american-doble',
+    name: 'American doble',
+    description: 'Doble medallón, triple cheddar, lechuga, tomate y mayo.',
+    price: 11000,
+    category: 'Hamburguesas',
+    image: '/AmericanDoble.jpg',
+  },
+  {
+    id: 'crispy-simple',
+    name: 'Crispy Bacon simple',
+    description: 'Un medallón, doble cheddar, cebolla crispy y panceta ahumada.',
+    price: 10000,
+    category: 'Hamburguesas',
+    image: '/CrispyDoble.jpg',
+  },
+  {
+    id: 'crispy-doble',
+    name: 'Crispy Bacon doble',
+    description: 'Doble medallón, triple cheddar, cebolla crispy y doble panceta.',
+    price: 13000,
+    category: 'Hamburguesas',
+    image: '/CrispyDoble.jpg',
+  },
+  {
+    id: 'triple-burger',
+    name: 'La triple 🧀',
+    description: 'Triple medallón, cuádruple queso y salsa loot secreta.',
+    price: 13000,
+    category: 'Hamburguesas',
+    image: '/CheeseDoble.jpg',
+    badge: '🤫 Secret Menu',
+  },
+  // ── Combos (con papas) ──────────────────────────────────────────────────────
+  {
+    id: 'starter-pack',
+    name: 'Starter Pack',
+    description: '1 Cheese simple + 1 American simple + porción de papas para compartir.',
+    price: 27500,
+    category: 'Combos',
+    image: '/StarterPack.jpg',
+    badge: '👥 Para compartir',
+  },
+  {
+    id: 'combo-cheese-simple',
+    name: 'Combo Cheeseburger simple',
+    description: 'Un medallón, doble cheddar + papas fritas.',
+    price: 9000,
+    category: 'Combos',
+    image: '/CheeseDoble.jpg',
+  },
+  {
+    id: 'combo-cheese-doble',
+    name: 'Combo Cheeseburger doble',
+    description: 'Doble medallón, triple cheddar, salsa loot + papas fritas.',
+    price: 12000,
+    category: 'Combos',
+    image: '/CheeseDoble.jpg',
+  },
+  {
+    id: 'combo-american-simple',
+    name: 'Combo American simple',
+    description: 'Un medallón, doble cheddar, lechuga, tomate + papas.',
+    price: 12000,
+    category: 'Combos',
+    image: '/AmericanDoble.jpg',
+  },
+  {
+    id: 'combo-american-doble',
+    name: 'Combo American doble',
+    description: 'Doble medallón, triple cheddar, lechuga, tomate + papas.',
+    price: 15000,
+    category: 'Combos',
+    image: '/AmericanDoble.jpg',
+  },
+  {
+    id: 'combo-crispy-simple',
+    name: 'Combo Crispy Bacon simple',
+    description: 'Un medallón, doble cheddar, cebolla crispy + papas.',
+    price: 14000,
+    category: 'Combos',
+    image: '/CrispyDoble.jpg',
+  },
+  {
+    id: 'combo-crispy-doble',
+    name: 'Combo Crispy Bacon doble',
+    description: 'Doble medallón, triple cheddar, cebolla crispy + papas.',
+    price: 17000,
+    category: 'Combos',
+    image: '/CrispyDoble.jpg',
+  },
+  {
+    id: 'combo-triple',
+    name: 'Combo La triple 🧀',
+    description: 'Triple medallón, cuádruple cheddar, salsa loot + papas.',
+    price: 17000,
+    category: 'Combos',
+    image: '/CheeseDoble.jpg',
+    badge: '🤫 Secret Menu',
+  },
+  // ── Adicionales ─────────────────────────────────────────────────────────────
+  {
+    id: 'papas',
+    name: 'Porción de papas',
+    description: 'Papas fritas crocantes, perfectas para acompañar.',
+    price: 4000,
+    category: 'Adicionales',
+    image: '/StarterPack.jpg',
+  },
+  {
+    id: 'medallon',
+    name: 'Un medallón de carne',
+    description: 'Medallón de carne fresca, cocinado a la plancha.',
+    price: 3000,
+    category: 'Adicionales',
+    image: '/AmericanDoble.jpg',
+  },
+  {
+    id: 'cheddar',
+    name: 'Una feta de cheddar',
+    description: 'Cheddar americano fundido, el clásico de Loot.',
+    price: 1000,
+    category: 'Adicionales',
+    image: '/CheeseDoble.jpg',
+  },
+  {
+    id: 'panceta',
+    name: 'Dos fetas de panceta ahumada',
+    description: 'Panceta ahumada premium, crujiente y sabrosa.',
+    price: 3000,
+    category: 'Adicionales',
+    image: '/CrispyDoble.jpg',
+  },
+  {
+    id: 'salsa-loot',
+    name: 'Dip salsa Loot (50cc)',
+    description: 'Nuestra salsa secreta con pepinillos en conserva. Adictiva.',
+    price: 600,
+    category: 'Adicionales',
+    image: '/StarterPack.jpg',
+  },
+]
+
+const CATEGORIES: Category[] = ['Hamburguesas', 'Combos', 'Adicionales']
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function formatPrice(price: number): string {
+  return new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price)
+}
+
+// ─── MenuCard ─────────────────────────────────────────────────────────────────
+function MenuCard({ item }: { item: MenuItem }) {
+  return (
+    <article
+      className="card-hover flex flex-col rounded-2xl overflow-hidden bg-white"
+      style={{ boxShadow: 'var(--shadow-md)' }}
+      aria-label={item.name}
+    >
+      {/* Image */}
+      <div className="relative w-full h-52 overflow-hidden">
+        <Image
+          src={item.image}
+          alt={item.name}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          quality={95}
+          className="object-cover transition-transform duration-500 hover:scale-105"
+        />
+        {/* Badge */}
+        {item.badge && (
+          <span
+            className="absolute top-3 left-3 text-xs font-bold text-white px-3 py-1 rounded-full"
+            style={{ backgroundColor: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}
+          >
+            {item.badge}
+          </span>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-col flex-1 p-4 gap-2">
+        {/* Name + Price */}
+        <div className="flex items-start justify-between gap-2">
+          <h3
+            className="text-lg leading-tight"
+            style={{ fontFamily: 'var(--font-lilita)', color: 'var(--brown)' }}
+          >
+            {item.name}
+          </h3>
+          <span
+            className="text-base font-bold shrink-0"
+            style={{ color: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}
+          >
+            {formatPrice(item.price)}
+          </span>
+        </div>
+
+        {/* Description */}
+        <p
+          className="text-sm leading-relaxed flex-1"
+          style={{ color: 'var(--gray-text)', fontFamily: 'var(--font-montserrat)' }}
+        >
+          {item.description}
+        </p>
+
+        {/* CTA Button */}
+        <button
+          id={`btn-add-${item.id}`}
+          className="btn-pill mt-2 mx-4 mb-4 py-2.5 text-sm font-bold tracking-wide cursor-pointer"
+          style={{ fontFamily: 'var(--font-montserrat)' }}
+          aria-label={`Agregar ${item.name} al pedido`}
+        >
+          + Agregar al pedido
+        </button>
+      </div>
+    </article>
+  )
+}
+
+// ─── MenuSection (Client) ─────────────────────────────────────────────────────
+export default function MenuSection() {
+  const [activeCategory, setActiveCategory] = useState<Category>('Hamburguesas')
+
+  const filtered = MENU_ITEMS.filter((item) => item.category === activeCategory)
+
+  return (
+    <section
+      id="menu"
+      className="py-14 px-4 md:px-10 lg:px-20"
+      style={{ backgroundColor: 'var(--cream)' }}
+      aria-labelledby="menu-heading"
+    >
+      {/* Section header */}
+      <div className="flex flex-col items-center text-center mb-8 mt-2">
+        <p
+          className="text-sm uppercase tracking-widest font-semibold mb-2"
+          style={{ color: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}
+        >
+          Nuestro menú
+        </p>
+        <h2
+          className="text-4xl md:text-5xl"
+          style={{ fontFamily: 'var(--font-lilita)', color: '#1e1e1e' }}
+        >
+          ¡Vení a Lootear!
+        </h2>
+      </div>
+
+      {/* Category Tabs */}
+      <div
+        className="flex flex-wrap justify-center gap-3 mb-10"
+        role="tablist"
+        aria-label="Filtrar por categoría"
+      >
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat}
+            id={`tab-${cat.toLowerCase()}`}
+            role="tab"
+            aria-selected={activeCategory === cat}
+            onClick={() => setActiveCategory(cat)}
+            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 cursor-pointer ${activeCategory === cat ? 'tab-active' : 'tab-inactive'
+              }`}
+            style={{ fontFamily: 'var(--font-montserrat)' }}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Grid */}
+      <div className="max-w-5xl mx-auto">
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          role="tabpanel"
+          aria-label={`Productos: ${activeCategory}`}
+        >
+          {filtered.map((item) => (
+            <MenuCard key={item.id} item={item} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
