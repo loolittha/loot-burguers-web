@@ -73,33 +73,35 @@ function Footer() {
   )
 }
 
-// ─── Page — Server Component ──────────────────────────────────────────────────
+// ─── Page — Server Component ─────────────────────────────────────────────────────────────────
 export default function Page() {
   return (
-    <main>
-      {/* 1. Barra de navegación roja */}
+    <>
+      {/* Navbar fixed — flota sobre todo el contenido */}
       <Navbar />
 
-      {/* 2. Hero — imagen full-width */}
-      <Hero />
+      <main>
+        {/* 1. Hero — imagen full-width, el navbar glass queda encima */}
+        <Hero />
 
-      {/* 3. Franja ajedrezada */}
-      <CheckerStrip />
+        {/* 2. Franja ajedrezada */}
+        <CheckerStrip />
 
-      {/* 4. Carrusel "Nuestras Delicias" */}
-      <BurgerCarousel />
+        {/* 3. Carrusel "Nuestras Delicias" */}
+        <BurgerCarousel />
 
-      {/* 5. Franja ajedrezada */}
-      <CheckerStrip />
+        {/* 4. Franja ajedrezada */}
+        <CheckerStrip />
 
-      {/* 6. Menú interactivo con tabs */}
-      <MenuSection />
+        {/* 5. Menú interactivo con tabs */}
+        <MenuSection />
 
-      {/* 7. Franja ajedrezada */}
-      <CheckerStrip />
+        {/* 6. Franja ajedrezada */}
+        <CheckerStrip />
 
-      {/* 8. Footer */}
-      <Footer />
-    </main>
+        {/* 7. Footer */}
+        <Footer />
+      </main>
+    </>
   )
 }
