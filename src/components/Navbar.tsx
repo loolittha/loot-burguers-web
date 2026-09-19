@@ -5,9 +5,9 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 const NAV_LINKS = [
-  { href: '#menu',     label: 'HACÉ TU PEDIDO' },
-  { href: '#nosotros', label: 'NOSOTROS'        },
-  { href: '#contacto', label: 'CONTACTO'        },
+  { href: '#menu', label: 'HACÉ TU PEDIDO' },
+  { href: '#nosotros', label: 'NOSOTROS' },
+  { href: '#contacto', label: 'CONTACTO' },
 ]
 
 export default function Navbar() {
@@ -38,12 +38,7 @@ export default function Navbar() {
             className="object-contain w-28 md:w-48 h-auto drop-shadow-xl"
             style={{ background: 'transparent' }}
           />
-          <span
-            className="text-white text-[10px] md:text-[11px] tracking-widest leading-none mt-1"
-            style={{ fontFamily: 'var(--font-lilita)' }}
-          >
-            LOOT BURGUERS
-          </span>
+
         </Link>
 
         {/* ── Links desktop — columna central ── */}
@@ -75,12 +70,12 @@ export default function Navbar() {
             /* ✕ */
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="4" y1="4" x2="20" y2="20" />
-              <line x1="20" y1="4" x2="4"  y2="20" />
+              <line x1="20" y1="4" x2="4" y2="20" />
             </svg>
           ) : (
             /* ☰ */
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <line x1="3" y1="6"  x2="21" y2="6"  />
+              <line x1="3" y1="6" x2="21" y2="6" />
               <line x1="3" y1="12" x2="21" y2="12" />
               <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
@@ -90,9 +85,8 @@ export default function Navbar() {
 
       {/* ── Menú móvil desplegable ── */}
       <div
-        className={`md:hidden fixed inset-0 z-50 transition-all duration-300 ${
-          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`md:hidden fixed inset-0 z-50 transition-all duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
         aria-hidden={!isOpen}
       >
         {/* Overlay oscuro */}
@@ -103,9 +97,8 @@ export default function Navbar() {
 
         {/* Panel */}
         <nav
-          className={`absolute top-0 left-0 right-0 shadow-2xl transition-transform duration-300 ${
-            isOpen ? 'translate-y-0' : '-translate-y-full'
-          }`}
+          className={`absolute top-0 left-0 right-0 shadow-2xl transition-transform duration-300 ${isOpen ? 'translate-y-0' : '-translate-y-full'
+            }`}
           style={{ backgroundColor: 'var(--red)' }}
           aria-label="Menú móvil"
         >

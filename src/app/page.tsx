@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import MenuSection from '@/components/MenuSection'
+import BurgerCarousel from '@/components/BurgerCarousel'
 
 // ─── Checkered divider ────────────────────────────────────────────────────────
 function CheckerStrip() {
@@ -39,76 +40,6 @@ function Hero() {
   )
 }
 
-// ─── Nuestras Delicias — showcase visual de 3 burgers ─────────────────────────
-function NuestrasDelicias() {
-  const burgers = [
-    { src: '/CheeseLOOT.jpg',   alt: 'Cheeseburger doble', rotate: '-6deg', scale: '0.88' },
-    { src: '/AmericanLOOT.jpg', alt: 'American doble',     rotate: '0deg',  scale: '1'    },
-    { src: '/CrispyLOOT.jpg',  alt: 'Crispy Bacon doble', rotate: '6deg',  scale: '0.88' },
-  ]
-
-  return (
-    <section
-      className="py-10 md:py-14 px-0 md:px-16"
-      style={{ backgroundColor: 'var(--cream)' }}
-      aria-labelledby="delicias-heading"
-    >
-      {/* Título */}
-      <h2
-        id="delicias-heading"
-        className="text-center text-3xl md:text-5xl mb-8 md:mb-12 px-4"
-        style={{ fontFamily: 'var(--font-lilita)', color: 'var(--red)' }}
-      >
-        NUESTRAS DELICIAS
-      </h2>
-
-      {/* Mobile: scroll horizontal sin rotación */}
-      <div className="flex md:hidden overflow-x-auto gap-4 px-4 pb-4 snap-x snap-mandatory scrollbar-hide">
-        {burgers.map(({ src, alt }) => (
-          <div
-            key={src}
-            className="relative overflow-hidden rounded-2xl shadow-xl flex-none snap-center"
-            style={{ width: '72vw', height: '56vw', minWidth: '220px', minHeight: '170px' }}
-          >
-            <Image
-              src={src}
-              alt={alt}
-              fill
-              sizes="72vw"
-              quality={90}
-              className="object-cover"
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* Desktop: efecto inclinado original */}
-      <div className="hidden md:flex items-center justify-center gap-8">
-        {burgers.map(({ src, alt, rotate, scale }) => (
-          <div
-            key={src}
-            className="relative overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 hover:scale-105 hover:z-10 hover:shadow-2xl"
-            style={{
-              transform: `rotate(${rotate}) scale(${scale})`,
-              width: 'clamp(180px, 28vw, 340px)',
-              height: 'clamp(220px, 34vw, 445px)',
-              flexShrink: 0,
-            }}
-          >
-            <Image
-              src={src}
-              alt={alt}
-              fill
-              sizes="30vw"
-              quality={95}
-              className="object-cover"
-            />
-          </div>
-        ))}
-      </div>
-    </section>
-  )
-}
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 function Footer() {
@@ -155,8 +86,11 @@ export default function Page() {
       {/* 3. Franja ajedrezada */}
       <CheckerStrip />
 
-      {/* 4. Showcase "Nuestras Delicias" */}
-      <NuestrasDelicias />
+      {/* 4. Carrusel "Nuestras Delicias" */}
+      <BurgerCarousel />
+
+      {/* 5. Franja ajedrezada */}
+      <CheckerStrip />
 
       {/* 6. Menú interactivo con tabs */}
       <MenuSection />
