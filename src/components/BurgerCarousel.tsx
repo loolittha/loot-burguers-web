@@ -195,7 +195,7 @@ export default function BurgerCarousel() {
               >
                 {burger.price}
               </span>
-              <Link
+              <a
                 href="#menu"
                 className="px-6 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all duration-200 hover:scale-105 active:scale-95"
                 style={{
@@ -206,7 +206,7 @@ export default function BurgerCarousel() {
                 }}
               >
                 Ver en el menú →
-              </Link>
+              </a>
             </div>
           </div>
         </div>

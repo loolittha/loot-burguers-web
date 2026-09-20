@@ -51,14 +51,14 @@ function Hero() {
             }}
           >
             Loot ofrece Smash burgers de alta calidad utilizando ingredientes
-            sofisticados. Salsas especiales y secretas.
+            sofisticados, salsas especiales y hamburguesas secretas.
           </p>
 
           {/* CTA */}
-          <Link
+          <a
             href="#menu"
             id="hero-cta-btn"
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg font-extrabold text-sm tracking-widest text-white transition-all duration-200 hover:brightness-110 hover:scale-105 active:scale-95"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-extrabold text-sm tracking-widest text-white transition-all duration-200 hover:brightness-110 hover:scale-105 active:scale-95"
             style={{
               backgroundColor: 'var(--red)',
               fontFamily: 'var(--font-montserrat)',
@@ -69,7 +69,7 @@ function Hero() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-          </Link>
+          </a>
         </div>
 
         {/* ── Columna derecha: video ── */}

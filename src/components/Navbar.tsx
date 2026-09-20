@@ -40,9 +40,17 @@ export default function Navbar() {
         {/* ── Logo izquierda ── */}
         <Link
           href="/"
-          onClick={close}
+          onClick={(e) => {
+            close?.()
+            // Si estoy en la home, hacemos scroll y borramos "#menu"
+            if (window.location.pathname === '/' || window.location.pathname === '') {
+              e.preventDefault()
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+              window.history.pushState(null, '', window.location.pathname)
+            }
+          }}
           aria-label="Inicio Loot Burgers"
-          className="flex items-center shrink-0 z-10 relative"
+          className="flex items-center shrink-0 z-10 relative cursor-pointer"
         >
           <Image
             src="/LogoLootMuñeco.png"
@@ -59,22 +67,28 @@ export default function Navbar() {
           <ul className="flex items-center gap-10 pointer-events-auto" role="list">
             {NAV_LINKS.map(({ href, label }) => (
               <li key={href}>
-                <Link
+                <a
                   href={href}
-                  className="nav-link text-xs font-extrabold tracking-widest"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    const targetId = href.replace('#', '')
+                    document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' })
+                    window.history.pushState(null, '', href)
+                  }}
+                  className="nav-link text-xs font-extrabold tracking-widest cursor-pointer"
                   style={{
                     fontFamily: 'var(--font-montserrat)',
                     color: 'var(--red)',
                   }}
                 >
                   {label}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
         </nav>
 
-        {/* ── Botón hamburguesa mobile ── */}
+        {/* ── Botón hamburguesa celular ── */}
         <button
           id="mobile-menu-btn"
           className="md:hidden p-2 rounded-lg z-[60]"
@@ -121,10 +135,16 @@ export default function Navbar() {
           <ul className="flex flex-col items-center gap-0 pb-8" role="list">
             {NAV_LINKS.map(({ href, label }) => (
               <li key={href} className="w-full">
-                <Link
+                <a
                   href={href}
-                  onClick={close}
-                  className="flex items-center justify-center w-full py-5 text-sm font-extrabold tracking-widest border-b transition-colors active:opacity-70"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    close()
+                    const targetId = href.replace('#', '')
+                    document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' })
+                    window.history.pushState(null, '', href)
+                  }}
+                  className="flex items-center justify-center w-full py-5 text-sm font-extrabold tracking-widest border-b transition-colors active:opacity-70 cursor-pointer"
                   style={{
                     fontFamily: 'var(--font-montserrat)',
                     color: 'var(--red)',
@@ -132,7 +152,7 @@ export default function Navbar() {
                   }}
                 >
                   {label}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
