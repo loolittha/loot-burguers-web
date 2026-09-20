@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Lilita_One, Montserrat } from 'next/font/google'
 import './globals.css'
+import WhatsAppFloat from '@/components/WhatsAppFloat'
 
 // ─── Fonts ────────────────────────────────────────────────────────────────────
 const lilitaOne = Lilita_One({
@@ -43,6 +44,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen antialiased">
         {children}
+        <WhatsAppFloat />
       </body>
     </html>
   )

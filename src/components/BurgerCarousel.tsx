@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -32,42 +32,54 @@ const BURGERS = [
   },
 ]
 
+const TOTAL = BURGERS.length
+const ANIM_MS = 280   // duración del cross-fade
+const AUTO_MS = 5000  // intervalo auto-play
+
 // ─── BurgerCarousel ────────────────────────────────────────────────────────────
 export default function BurgerCarousel() {
   const [current, setCurrent] = useState(0)
-  const [animating, setAnimating] = useState(false)
-  const [direction, setDirection] = useState<'next' | 'prev'>('next')
-  const touchStartX = useRef<number | null>(null)
+  const [fading, setFading] = useState(false)
+
+  // Ref para guardia — no dispara re-renders
+  const animatingRef = useRef(false)
+  // Ref para siempre tener el valor actual en el closure del timer
+  const currentRef = useRef(current)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const touchStartX = useRef<number | null>(null)
 
-  const total = BURGERS.length
+  // Sincronizar ref con state
+  useEffect(() => { currentRef.current = current }, [current])
 
-  // ── Navigate ────────────────────────────────────────────────────────────────
-  const goTo = useCallback((index: number, dir: 'next' | 'prev' = 'next') => {
-    if (animating) return
-    setDirection(dir)
-    setAnimating(true)
+  // ── navigate ─────────────────────────────────────────────────────────────────
+  const navigate = (index: number) => {
+    if (animatingRef.current || index === currentRef.current) return
+    animatingRef.current = true
+    setFading(true)
     setTimeout(() => {
       setCurrent(index)
-      setAnimating(false)
-    }, 350)
-  }, [animating])
+      setFading(false)
+      animatingRef.current = false
+    }, ANIM_MS)
+  }
 
-  const next = useCallback(() => goTo((current + 1) % total, 'next'), [current, goTo, total])
-  const prev = useCallback(() => goTo((current - 1 + total) % total, 'prev'), [current, goTo, total])
+  const goNext = () => navigate((currentRef.current + 1) % TOTAL)
+  const goPrev = () => navigate((currentRef.current - 1 + TOTAL) % TOTAL)
 
-  // ── Auto-play ───────────────────────────────────────────────────────────────
-  const resetTimer = useCallback(() => {
+  // ── Auto-play estable ────────────────────────────────────────────────────────
+  const startTimer = () => {
     if (timerRef.current) clearTimeout(timerRef.current)
-    timerRef.current = setTimeout(next, 5000)
-  }, [next])
+    timerRef.current = setTimeout(() => {
+      navigate((currentRef.current + 1) % TOTAL)
+    }, AUTO_MS)
+  }
 
   useEffect(() => {
-    resetTimer()
+    startTimer()
     return () => { if (timerRef.current) clearTimeout(timerRef.current) }
-  }, [current, resetTimer])
+  }, [current]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Touch / swipe ───────────────────────────────────────────────────────────
+  // ── Swipe ────────────────────────────────────────────────────────────────────
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX
   }
@@ -75,8 +87,8 @@ export default function BurgerCarousel() {
     if (touchStartX.current === null) return
     const delta = touchStartX.current - e.changedTouches[0].clientX
     if (Math.abs(delta) > 50) {
-      delta > 0 ? next() : prev()
-      resetTimer()
+      delta > 0 ? goNext() : goPrev()
+      startTimer()
     }
     touchStartX.current = null
   }
@@ -98,7 +110,7 @@ export default function BurgerCarousel() {
           className="text-xs uppercase tracking-[0.25em] font-semibold mb-1"
           style={{ color: 'rgba(245,230,211,0.7)', fontFamily: 'var(--font-montserrat)' }}
         >
-          Nuestras especialidades
+          Sabor artesanal
         </p>
         <h2
           className="text-4xl md:text-5xl"
@@ -113,87 +125,89 @@ export default function BurgerCarousel() {
         className="relative flex flex-col md:flex-row items-stretch mx-4 md:mx-12 lg:mx-24 rounded-3xl overflow-hidden"
         style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.4)', minHeight: '360px' }}
       >
-        {/* Imagen */}
+        {/* ── Imágenes pre-renderizadas ── */}
         <div
           className="relative w-full md:w-[55%] flex-none"
           style={{ minHeight: '280px', height: 'clamp(280px, 50vw, 520px)' }}
         >
-          <Image
-            key={burger.src}
-            src={burger.src}
-            alt={burger.name}
-            fill
-            priority={current === 0}
-            sizes="(max-width: 768px) 100vw, 55vw"
-            quality={95}
-            className={`object-cover transition-all duration-[350ms] ${animating
-              ? direction === 'next'
-                ? 'opacity-0 scale-[1.03]'
-                : 'opacity-0 scale-[0.97]'
-              : 'opacity-100 scale-100'
-              }`}
-          />
-          {/* Gradiente desktop hacia el panel */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/40 hidden md:block" />
-          {/* Gradiente mobile hacia el texto */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50 md:hidden" />
+          {BURGERS.map((b, i) => (
+            <Image
+              key={b.id}
+              src={b.src}
+              alt={b.name}
+              fill
+              priority={i === 0}
+              sizes="(max-width: 768px) 100vw, 55vw"
+              quality={90}
+              className="object-cover"
+              style={{
+                opacity: i === current ? 1 : 0,
+                transition: `opacity ${ANIM_MS}ms ease`,
+                willChange: 'opacity',
+              }}
+            />
+          ))}
+
+          {/* Gradientes sobre las imágenes */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/40 hidden md:block z-10 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50 md:hidden z-10 pointer-events-none" />
         </div>
 
-        {/* Panel de texto */}
+        {/* ── Panel de texto ── */}
         <div
           className="flex-1 flex flex-col justify-center px-8 py-8 md:py-10 md:pl-10 md:pr-8"
           style={{ backgroundColor: '#1a0508' }}
         >
-          {/* Tagline */}
-          <span
-            className={`inline-block text-xs uppercase tracking-[0.3em] font-bold mb-3 transition-all duration-300 ${animating ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'
-              }`}
-            style={{ color: '#F5E6D3', fontFamily: 'var(--font-montserrat)' }}
-          >
-            {burger.tagline}
-          </span>
-
-          {/* Nombre */}
-          <h3
-            className={`text-4xl md:text-5xl lg:text-6xl leading-none mb-4 transition-all duration-[350ms] delay-75 ${animating ? 'opacity-0 translate-y-3' : 'opacity-100 translate-y-0'
-              }`}
-            style={{ fontFamily: 'var(--font-lilita)', color: '#F5E6D3' }}
-          >
-            {burger.name}
-          </h3>
-
-          {/* Descripción */}
-          <p
-            className={`text-sm md:text-base leading-relaxed mb-6 transition-all duration-[350ms] delay-100 ${animating ? 'opacity-0 translate-y-3' : 'opacity-100 translate-y-0'
-              }`}
-            style={{ color: 'rgba(245,230,211,0.75)', fontFamily: 'var(--font-montserrat)', maxWidth: '360px' }}
-          >
-            {burger.description}
-          </p>
-
-          {/* Precio + CTA */}
+          {/* Cross-fade del texto */}
           <div
-            className={`flex items-center gap-4 flex-wrap transition-all duration-[350ms] delay-150 ${animating ? 'opacity-0 translate-y-3' : 'opacity-100 translate-y-0'
-              }`}
+            style={{
+              opacity: fading ? 0 : 1,
+              transform: fading ? 'translateY(6px)' : 'translateY(0)',
+              transition: `opacity ${ANIM_MS}ms ease, transform ${ANIM_MS}ms ease`,
+              willChange: 'opacity, transform',
+            }}
           >
             <span
-              className="text-2xl md:text-3xl font-extrabold"
+              className="inline-block text-xs uppercase tracking-[0.3em] font-bold mb-3"
               style={{ color: '#F5E6D3', fontFamily: 'var(--font-montserrat)' }}
             >
-              {burger.price}
+              {burger.tagline}
             </span>
-            <Link
-              href="#menu"
-              className="px-6 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all duration-200 hover:scale-105 active:scale-95"
-              style={{
-                backgroundColor: '#C1121F',
-                color: '#F5E6D3',
-                fontFamily: 'var(--font-montserrat)',
-                boxShadow: '0 4px 16px rgba(193,18,31,0.5)',
-              }}
+
+            <h3
+              className="text-4xl md:text-5xl lg:text-6xl leading-none mb-4"
+              style={{ fontFamily: 'var(--font-lilita)', color: '#F5E6D3' }}
             >
-              Ver en el menú →
-            </Link>
+              {burger.name}
+            </h3>
+
+            <p
+              className="text-sm md:text-base leading-relaxed mb-6"
+              style={{ color: 'rgba(245,230,211,0.75)', fontFamily: 'var(--font-montserrat)', maxWidth: '360px' }}
+            >
+              {burger.description}
+            </p>
+
+            <div className="flex items-center gap-4 flex-wrap">
+              <span
+                className="text-2xl md:text-3xl font-extrabold"
+                style={{ color: '#F5E6D3', fontFamily: 'var(--font-montserrat)' }}
+              >
+                {burger.price}
+              </span>
+              <Link
+                href="#menu"
+                className="px-6 py-2.5 rounded-full text-sm font-bold tracking-wide transition-all duration-200 hover:scale-105 active:scale-95"
+                style={{
+                  backgroundColor: '#C1121F',
+                  color: '#F5E6D3',
+                  fontFamily: 'var(--font-montserrat)',
+                  boxShadow: '0 4px 16px rgba(193,18,31,0.5)',
+                }}
+              >
+                Ver en el menú →
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -201,9 +215,8 @@ export default function BurgerCarousel() {
       {/* ── Controles ──────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-center gap-6 py-7">
 
-        {/* Botón prev */}
         <button
-          onClick={() => { prev(); resetTimer() }}
+          onClick={() => { goPrev(); startTimer() }}
           aria-label="Anterior hamburguesa"
           className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
           style={{ backgroundColor: 'rgba(245,230,211,0.15)', color: '#F5E6D3' }}
@@ -213,7 +226,6 @@ export default function BurgerCarousel() {
           </svg>
         </button>
 
-        {/* Dots */}
         <div className="flex items-center gap-2" role="tablist" aria-label="Seleccionar hamburguesa">
           {BURGERS.map((b, i) => (
             <button
@@ -221,20 +233,20 @@ export default function BurgerCarousel() {
               role="tab"
               aria-selected={i === current}
               aria-label={b.name}
-              onClick={() => { goTo(i, i > current ? 'next' : 'prev'); resetTimer() }}
-              className="rounded-full transition-all duration-300"
+              onClick={() => { navigate(i); startTimer() }}
+              className="rounded-full"
               style={{
                 width: i === current ? '28px' : '8px',
                 height: '8px',
                 backgroundColor: i === current ? '#F5E6D3' : 'rgba(245,230,211,0.35)',
+                transition: 'width 300ms ease, background-color 300ms ease',
               }}
             />
           ))}
         </div>
 
-        {/* Botón next */}
         <button
-          onClick={() => { next(); resetTimer() }}
+          onClick={() => { goNext(); startTimer() }}
           aria-label="Siguiente hamburguesa"
           className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
           style={{ backgroundColor: 'rgba(245,230,211,0.15)', color: '#F5E6D3' }}
