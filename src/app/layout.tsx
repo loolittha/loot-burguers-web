@@ -3,7 +3,7 @@ import { Lilita_One, Montserrat } from 'next/font/google'
 import './globals.css'
 import WhatsAppFloat from '@/components/WhatsAppFloat'
 
-// ─── Fonts ────────────────────────────────────────────────────────────────────
+// ─── Fuentes ────────────────────────────────────────────────────────────────────
 const lilitaOne = Lilita_One({
   weight: '400',
   subsets: ['latin'],

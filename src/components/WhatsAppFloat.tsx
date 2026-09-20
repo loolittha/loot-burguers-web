@@ -1,6 +1,6 @@
 'use client'
 
-//Botón de wpp
+//Botón de wpp flotante
 export default function WhatsAppFloat() {
   return (
     <a
