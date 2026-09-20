@@ -31,7 +31,7 @@ export default function Navbar() {
           fixed top-0 left-0 right-0 z-40
           w-full h-16 md:h-20
           flex items-center justify-between
-          px-5 md:px-10
+          px-6 md:px-20
           transition-shadow duration-300
           ${scrolled ? 'shadow-md' : ''}
         `}
@@ -42,7 +42,7 @@ export default function Navbar() {
           href="/"
           onClick={close}
           aria-label="Inicio Loot Burgers"
-          className="flex items-center shrink-0"
+          className="flex items-center shrink-0 z-10 relative"
         >
           <Image
             src="/LogoLootMuñeco.png"
@@ -55,8 +55,8 @@ export default function Navbar() {
         </Link>
 
         {/* ── Links desktop — centro/derecha ── */}
-        <nav aria-label="Navegación principal" className="hidden md:flex">
-          <ul className="flex items-center gap-8" role="list">
+        <nav aria-label="Navegación principal" className="hidden md:flex absolute inset-0 items-center justify-center pointer-events-none">
+          <ul className="flex items-center gap-10 pointer-events-auto" role="list">
             {NAV_LINKS.map(({ href, label }) => (
               <li key={href}>
                 <Link
