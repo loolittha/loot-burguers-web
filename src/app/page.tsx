@@ -4,11 +4,10 @@ import MenuSection from '@/components/MenuSection'
 import BurgerCarousel from '@/components/BurgerCarousel'
 import Image from 'next/image'
 import Nosotros from '@/components/Nosotros'
-import Marquesina from '@/components/Marquesina'
 import Ubicacion from '@/components/Ubicacion'
 import Carrito from '@/components/Carrito'
 
-// ─── Checkered divider ────────────────────────────────────────────────────────
+//Checkered divider
 function CheckerStrip() {
   return (
     <div
@@ -22,7 +21,7 @@ function CheckerStrip() {
   )
 }
 
-// ─── Hero — dos columnas sobre fondo crema ────────────────────────────────────
+// Hero — dos columnas sobre fondo crema
 function Hero() {
   return (
     <section
@@ -34,7 +33,7 @@ function Hero() {
 
         {/* ── Columna izquierda: textos ── */}
         <div>
-          {/* Título principal */}
+          {/*Título principal*/}
           <h1
             className="text-6xl sm:text-7xl md:text-8xl leading-[0.95] mb-6"
             style={{ fontFamily: 'var(--font-lilita)' }}
@@ -46,7 +45,7 @@ function Hero() {
             <span style={{ color: 'var(--red)' }}>INCREÍBLE.</span>
           </h1>
 
-          {/* Descripción */}
+          {/*Descripción*/}
           <p
             className="text-base md:text-lg leading-relaxed mb-8 max-w-sm"
             style={{
@@ -58,7 +57,7 @@ function Hero() {
             sofisticados, salsas especiales y hamburguesas secretas.
           </p>
 
-          {/* CTA */}
+          {/*CTA*/}
           <a
             href="#menu"
             id="hero-cta-btn"
@@ -76,9 +75,9 @@ function Hero() {
           </a>
         </div>
 
-        {/* ── Columna derecha: video con mascota superpuesta ── */}
+        {/*Columna derecha: video con Lootsito superpuesto */}
         <div className="relative w-full">
-          {/* Marco que recorta el video */}
+          {/*Marco que recorta el video */}
           <div
             className="rounded-3xl overflow-hidden w-full"
             style={{ aspectRatio: '4/3' }}
@@ -215,27 +214,25 @@ export default function Page() {
         {/* 1. Hero — dos columnas, fondo crema */}
         <Hero />
 
-        {/* 2. Franja ajedrezada */}
+        {/* 2. Franja*/}
         <CheckerStrip />
 
         {/* 3. Carrusel "Nuestras Delicias" */}
         <BurgerCarousel />
 
-        {/* 4. Franja ajedrezada */}
+        {/* 4. Franja */}
         <CheckerStrip />
 
         {/* 5. Menú interactivo */}
         <MenuSection />
 
-
-
-        {/* 7. Sección Nosotros & Eventos */}
+        {/* 6. Sección Nosotros & Eventos */}
         <Nosotros />
 
-        {/* 8. Zonas de entrega */}
+        {/* 7. Zonas de entrega */}
         <Ubicacion />
 
-        {/* 8. Franja ajedrezada */}
+        {/* 8. Franja */}
         <CheckerStrip />
 
         {/* 9. Footer */}

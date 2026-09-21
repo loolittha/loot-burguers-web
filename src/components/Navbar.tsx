@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react'
 const NAV_LINKS = [
   { href: '#menu', label: 'BURGERS' },
   { href: '#nosotros', label: 'NOSOTROS' },
+  { href: '#ubicacion', label: 'UBICACIÓN' },
   { href: '#contacto', label: 'CONTACTO' },
 ]
 
@@ -131,7 +132,20 @@ export default function Navbar() {
           style={{ backgroundColor: 'var(--cream)' }}
           aria-label="Menú móvil"
         >
-          <div className="h-16" />
+          {/* Barra superior con botón X */}
+          <div className="h-16 flex items-center justify-end px-6">
+            <button
+              onClick={close}
+              aria-label="Cerrar menú"
+              className="w-9 h-9 flex items-center justify-center rounded-full transition-colors active:opacity-70"
+              style={{ backgroundColor: 'rgba(193,18,31,0.1)', color: 'var(--red)' }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round">
+                <line x1="4" y1="4" x2="20" y2="20" />
+                <line x1="20" y1="4" x2="4" y2="20" />
+              </svg>
+            </button>
+          </div>
           <ul className="flex flex-col items-center gap-0 pb-8" role="list">
             {NAV_LINKS.map(({ href, label }) => (
               <li key={href} className="w-full">
