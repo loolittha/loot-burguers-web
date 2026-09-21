@@ -322,6 +322,24 @@ export default function MenuSection() {
         ))}
       </div>
 
+      {/*Subtítulo según categoría */}
+      {activeCategory === 'Hamburguesas' && (
+        <p
+          className="text-center text-sm text-neutral-600 -mt-6 mb-8"
+          style={{ fontFamily: 'var(--font-montserrat)' }}
+        >
+          <strong>No se adicionan papas fritas</strong>
+        </p>
+      )}
+      {activeCategory === 'Combos' && (
+        <p
+          className="text-center text-sm text-neutral-600 -mt-6 mb-8"
+          style={{ fontFamily: 'var(--font-montserrat)' }}
+        >
+          <strong>Todos los combos traen papas fritas</strong>
+        </p>
+      )}
+
       {/* Grid */}
       <div className="max-w-5xl mx-auto">
         <div
