@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Nosotros from '@/components/Nosotros'
 import Marquesina from '@/components/Marquesina'
 import Ubicacion from '@/components/Ubicacion'
+import Carrito from '@/components/Carrito'
 
 // ─── Checkered divider ────────────────────────────────────────────────────────
 function CheckerStrip() {
@@ -240,6 +241,8 @@ export default function Page() {
         {/* 9. Footer */}
         <Footer />
 
+        {/* 10. Carrito */}
+        <Carrito />
       </main>
     </>
   )

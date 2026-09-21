@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Lilita_One, Montserrat } from 'next/font/google'
 import './globals.css'
 import WhatsAppFloat from '@/components/WhatsAppFloat'
+import { CartProvider } from '@/context/CartContext' // <-- 1. Importamos el contexto
 
 // Fuentes
 const lilitaOne = Lilita_One({
@@ -43,8 +44,11 @@ export default function RootLayout({
       className={`${lilitaOne.variable} ${montserrat.variable}`}
     >
       <body className="min-h-screen antialiased">
-        {children}
-        <WhatsAppFloat />
+        {/* 2. Envolvemos la app con el CartProvider */}
+        <CartProvider>
+          {children}
+          <WhatsAppFloat />
+        </CartProvider>
       </body>
     </html>
   )

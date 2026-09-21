@@ -1,7 +1,12 @@
 'use client'
 
+import { useCart } from '@/context/CartContext'
+
 //Botón de wpp flotante
 export default function WhatsAppFloat() {
+  const { isCartOpen, count } = useCart()
+  const shouldHide = count > 0 || isCartOpen
+
   return (
     <a
       href="https://wa.me/5491178220054"
@@ -9,7 +14,7 @@ export default function WhatsAppFloat() {
       rel="noopener noreferrer"
       id="whatsapp-float-btn"
       aria-label="Contactar por WhatsApp"
-      className="fixed bottom-6 right-5 z-[100] flex items-center justify-center w-14 h-14 rounded-full shadow-2xl transition-transform duration-200 hover:scale-110 active:scale-95"
+      className={`fixed bottom-6 right-5 z-[100] flex items-center justify-center w-14 h-14 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 ${shouldHide ? 'opacity-0 pointer-events-none scale-75' : 'opacity-100 scale-100'}`}
       style={{ backgroundColor: '#25D366', boxShadow: '0 4px 24px rgba(37,211,102,0.5)' }}
     >
       <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
@@ -18,3 +23,4 @@ export default function WhatsAppFloat() {
     </a>
   )
 }
+

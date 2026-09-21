@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { useCart } from '@/context/CartContext'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Category = 'Hamburguesas' | 'Combos' | 'Adicionales'
@@ -200,7 +201,7 @@ function formatPrice(price: number): string {
 }
 
 // ─── MenuCard ─────────────────────────────────────────────────────────────────
-function MenuCard({ item }: { item: MenuItem }) {
+function MenuCard({ item, onAdd }: { item: MenuItem; onAdd: () => void }) {
   return (
     <article
       className="card-hover flex flex-col rounded-2xl overflow-hidden bg-white"
@@ -257,6 +258,7 @@ function MenuCard({ item }: { item: MenuItem }) {
         {/* CTA Button */}
         <button
           id={`btn-add-${item.id}`}
+          onClick={onAdd}
           className="btn-pill mt-2 mx-4 mb-4 py-2.5 text-sm font-bold tracking-wide cursor-pointer"
           style={{ fontFamily: 'var(--font-montserrat)' }}
           aria-label={`Agregar ${item.name} al pedido`}
@@ -271,6 +273,7 @@ function MenuCard({ item }: { item: MenuItem }) {
 // ─── MenuSection (Client) ─────────────────────────────────────────────────────
 export default function MenuSection() {
   const [activeCategory, setActiveCategory] = useState<Category>('Hamburguesas')
+  const { addToCart } = useCart()
 
   const filtered = MENU_ITEMS.filter((item) => item.category === activeCategory)
 
@@ -327,7 +330,11 @@ export default function MenuSection() {
           aria-label={`Productos: ${activeCategory}`}
         >
           {filtered.map((item) => (
-            <MenuCard key={item.id} item={item} />
+            <MenuCard
+              key={item.id}
+              item={item}
+              onAdd={() => addToCart(item)}
+            />
           ))}
         </div>
       </div>
