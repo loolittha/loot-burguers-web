@@ -3,6 +3,9 @@ import Navbar from '@/components/Navbar'
 import MenuSection from '@/components/MenuSection'
 import BurgerCarousel from '@/components/BurgerCarousel'
 import Image from 'next/image'
+import Nosotros from '@/components/Nosotros'
+import Marquesina from '@/components/Marquesina'
+import Ubicacion from '@/components/Ubicacion'
 
 // ─── Checkered divider ────────────────────────────────────────────────────────
 function CheckerStrip() {
@@ -72,21 +75,35 @@ function Hero() {
           </a>
         </div>
 
-        {/* ── Columna derecha: video ── */}
-        <div
-          className="rounded-3xl overflow-hidden shadow-2xl w-full"
-          style={{ aspectRatio: '4/3' }}
-        >
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-            aria-hidden="true"
+        {/* ── Columna derecha: video con mascota superpuesta ── */}
+        <div className="relative w-full">
+          {/* Marco que recorta el video */}
+          <div
+            className="rounded-3xl overflow-hidden w-full"
+            style={{ aspectRatio: '4/3' }}
           >
-            <source src="/HeroVideo.mp4" type="video/mp4" />
-          </video>
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+              aria-hidden="true"
+            >
+              <source src="/HeroVideo.mp4" type="video/mp4" />
+            </video>
+          </div>
+
+          {/* Lootsito */}
+          <div className="absolute -bottom-5 -right-10 sm:-bottom-10 sm:-right-12 w-28 h-24 sm:w-40 sm:h-40 z-10 pointer-events-none drop-shadow-2xl transform rotate-6">
+            <Image
+              src="/logo-loot-inv.png"
+              alt="Mascota Loot Burgers"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
         </div>
 
       </div>
@@ -209,10 +226,18 @@ export default function Page() {
         {/* 5. Menú interactivo */}
         <MenuSection />
 
-        {/* 6. Franja ajedrezada */}
+
+
+        {/* 7. Sección Nosotros & Eventos */}
+        <Nosotros />
+
+        {/* 8. Zonas de entrega */}
+        <Ubicacion />
+
+        {/* 8. Franja ajedrezada */}
         <CheckerStrip />
 
-        {/* 7. Footer */}
+        {/* 9. Footer */}
         <Footer />
 
       </main>

@@ -3,7 +3,7 @@ import { Lilita_One, Montserrat } from 'next/font/google'
 import './globals.css'
 import WhatsAppFloat from '@/components/WhatsAppFloat'
 
-// ─── Fuentes ────────────────────────────────────────────────────────────────────
+// Fuentes
 const lilitaOne = Lilita_One({
   weight: '400',
   subsets: ['latin'],
@@ -17,9 +17,9 @@ const montserrat = Montserrat({
   display: 'swap',
 })
 
-// ─── Metadata ─────────────────────────────────────────────────────────────────
+// Metadata 
 export const metadata: Metadata = {
-  title: 'Loot Burgers — Las mejores hamburguesas de la zona',
+  title: 'Loot Burgers',
   description:
     'Loot Burgers: smash burgers artesanales con medallones de carne, doble cheddar y la mejor salsa Loot. Pedí tu combo ahora.',
   keywords: ['hamburguesas', 'smash burger', 'loot burgers', 'combos', 'delivery'],
@@ -31,7 +31,7 @@ export const viewport = {
   maximumScale: 5,
 }
 
-// ─── Layout ───────────────────────────────────────────────────────────────────
+// Layout
 export default function RootLayout({
   children,
 }: {
