@@ -23,7 +23,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'cheese-simple',
     name: 'Cheeseburger simple',
-    description: 'Un medallón de carne y doble cheddar derretido.',
+    description: 'Un medallón y doble cheddar.',
     price: 7000,
     category: 'Hamburguesas',
     image: '/CheeseSimple.png',
@@ -31,7 +31,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'cheese-doble',
     name: 'Cheeseburger doble',
-    description: 'Doble medallón y triple cheddar fundido.',
+    description: 'Doble medallón y triple cheddar.',
     price: 10000,
     category: 'Hamburguesas',
     image: '/CheeseDoble.jpg',
@@ -40,7 +40,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'american-simple',
     name: 'American simple',
-    description: 'Un medallón, doble cheddar, lechuga, tomate y mayo.',
+    description: 'Un medallón, doble cheddar, lechuga, tomate y cebolla grill.',
     price: 8000,
     category: 'Hamburguesas',
     image: '/AmericanSimple.png',
@@ -48,7 +48,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'american-doble',
     name: 'American doble',
-    description: 'Doble medallón, triple cheddar, lechuga, tomate y mayo.',
+    description: 'Doble medallón, triple cheddar, lechuga, tomate y cebolla grill.',
     price: 11000,
     category: 'Hamburguesas',
     image: '/AmericanDoble.jpg',
@@ -64,7 +64,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'crispy-doble',
     name: 'Crispy Bacon doble',
-    description: 'Doble medallón, triple cheddar, cebolla crispy y doble panceta.',
+    description: 'Doble medallón, triple cheddar, cebolla crispy y panceta ahumada.',
     price: 13000,
     category: 'Hamburguesas',
     image: '/CrispyDoble.jpg',
@@ -72,7 +72,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'triple-burger',
     name: 'La triple 🧀',
-    description: 'Triple medallón, cuádruple queso y salsa loot secreta.',
+    description: 'Triple medallón, cuádruple queso y salsa loot.',
     price: 13000,
     category: 'Hamburguesas',
     image: '/SecretMenu.png',
@@ -107,7 +107,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'combo-american-simple',
     name: 'Combo American simple',
-    description: 'Un medallón, doble cheddar, lechuga, tomate + papas.',
+    description: 'Un medallón, doble cheddar, lechuga, tomate, cebolla grill + papas.',
     price: 12000,
     category: 'Combos',
     image: '/AmericanSimple.png',
@@ -115,7 +115,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'combo-american-doble',
     name: 'Combo American doble',
-    description: 'Doble medallón, triple cheddar, lechuga, tomate + papas.',
+    description: 'Doble medallón, triple cheddar, lechuga, tomate, cebolla grill + papas.',
     price: 15000,
     category: 'Combos',
     image: '/AmericanDoble.jpg',
@@ -123,7 +123,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'combo-crispy-simple',
     name: 'Combo Crispy Bacon simple',
-    description: 'Un medallón, doble cheddar, cebolla crispy + papas.',
+    description: 'Un medallón, doble cheddar, cebolla crispy, panceta ahumada + papas.',
     price: 14000,
     category: 'Combos',
     image: '/CrispySimple.png',
@@ -131,7 +131,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'combo-crispy-doble',
     name: 'Combo Crispy Bacon doble',
-    description: 'Doble medallón, triple cheddar, cebolla crispy + papas.',
+    description: 'Doble medallón, triple cheddar, cebolla crispy, panceta ahumada + papas.',
     price: 17000,
     category: 'Combos',
     image: '/CrispyDoble.jpg',
