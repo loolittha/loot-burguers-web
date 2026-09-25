@@ -1,10 +1,27 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useCart } from '@/context/CartContext'
+import dynamic from 'next/dynamic'
+
+// Importar el mapa dinámicamente para evitar SSR (Google Maps requiere browser)
+//
+// 🔵 Sistema RADIAL activo (círculos concéntricos desde el local)
+// Para volver al sistema de POLÍGONOS por barrio, comentá la línea de abajo
+// y descomentá la siguiente:
+const DeliveryMap = dynamic(() => import('./DeliveryMapRadial'), {
+    // const DeliveryMap = dynamic(() => import('./DeliveryMap'), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full rounded-xl bg-neutral-100 flex items-center justify-center" style={{ height: '220px' }}>
+            <span className="text-xs text-neutral-400" style={{ fontFamily: 'var(--font-montserrat)' }}>Cargando mapa...</span>
+        </div>
+    ),
+})
 
 export default function Carrito() {
     const [metodo, setMetodo] = useState<'envio' | 'retiro'>('envio')
+    const [costoEnvio, setCostoEnvio] = useState<number | null>(null)
 
     const { items, total, count, updateQuantity, isCartOpen, setIsCartOpen } = useCart()
 
@@ -15,8 +32,11 @@ export default function Carrito() {
 
     if (count === 0) return null
 
-    const costoEnvio = 1800
-    const totalFinal = metodo === 'envio' ? total + costoEnvio : total
+    const totalFinal = metodo === 'retiro'
+        ? total
+        : costoEnvio !== null
+            ? total + costoEnvio
+            : total
 
     return (
         <>
@@ -49,6 +69,7 @@ export default function Carrito() {
                             items={items}
                             total={total}
                             costoEnvio={costoEnvio}
+                            setCostoEnvio={setCostoEnvio}
                             totalFinal={totalFinal}
                             updateQuantity={updateQuantity}
                             setIsCartOpen={setIsCartOpen}
@@ -60,15 +81,16 @@ export default function Carrito() {
     )
 }
 
-// ─── Sub-componente con estado de formulario ───────────────────────────────────
+// ─── Sub-componente con estado de formulario ────────────────────────────────────
 function CartPanel({
-    metodo, setMetodo, items, total, costoEnvio, totalFinal, updateQuantity, setIsCartOpen
+    metodo, setMetodo, items, total, costoEnvio, setCostoEnvio, totalFinal, updateQuantity, setIsCartOpen
 }: {
     metodo: 'envio' | 'retiro'
     setMetodo: (m: 'envio' | 'retiro') => void
     items: { id: string; name: string; price: number; quantity: number }[]
     total: number
-    costoEnvio: number
+    costoEnvio: number | null
+    setCostoEnvio: (v: number | null) => void
     totalFinal: number
     updateQuantity: (id: string, delta: number) => void
     setIsCartOpen: (v: boolean) => void
@@ -76,17 +98,59 @@ function CartPanel({
     const [nombre, setNombre] = useState('')
     const [direccion, setDireccion] = useState('')
     const [aclaraciones, setAclaraciones] = useState('')
+    const [outOfRange, setOutOfRange] = useState(false)
 
     // Resetear dirección al cambiar de método
     const handleMetodo = (m: 'envio' | 'retiro') => {
         setMetodo(m)
         setDireccion('')
+        setCostoEnvio(null)
+        setOutOfRange(false)
     }
+
+    const handleAddressChange = useCallback((address: string, cost: number | null, isOutOfRange: boolean) => {
+        setDireccion(address)
+        setCostoEnvio(cost)
+        setOutOfRange(isOutOfRange)
+    }, [setCostoEnvio])
 
     const canSubmit =
         metodo === 'envio'
-            ? nombre.trim() !== '' && direccion.trim() !== ''
+            ? nombre.trim() !== '' && direccion.trim() !== '' && !outOfRange && costoEnvio !== null
             : nombre.trim() !== ''
+
+    const buildWhatsAppMessage = () => {
+        const lines = [
+            `🍔 *Nuevo pedido de Loot Burguers*`,
+            ``,
+            `👤 *Nombre:* ${nombre}`,
+            ``,
+            `🛒 *Productos:*`,
+            ...items.map(i => `• ${i.name} x${i.quantity} — $${(i.price * i.quantity).toLocaleString('es-AR')}`),
+            ``,
+            `💰 *Subtotal:* $${total.toLocaleString('es-AR')}`,
+        ]
+
+        if (metodo === 'envio') {
+            lines.push(`📍 *Dirección:* ${direccion}`)
+            lines.push(`🚗 *Costo de envío:* $${costoEnvio?.toLocaleString('es-AR')}`)
+            lines.push(`💳 *Total con envío:* $${(total + (costoEnvio ?? 0)).toLocaleString('es-AR')}`)
+        } else {
+            lines.push(`🏪 *Modalidad:* Retiro en local`)
+            lines.push(`💳 *Total:* $${total.toLocaleString('es-AR')}`)
+        }
+
+        if (aclaraciones.trim()) {
+            lines.push(``, `📝 *Aclaraciones:* ${aclaraciones}`)
+        }
+
+        return encodeURIComponent(lines.join('\n'))
+    }
+
+    const handleSubmit = () => {
+        const msg = buildWhatsAppMessage()
+        window.open(`https://wa.me/5491100000000?text=${msg}`, '_blank')
+    }
 
     return (
         <>
@@ -125,8 +189,10 @@ function CartPanel({
                     </div>
                 </div>
 
+                {/* ─── SECCIÓN ENVÍO ─── */}
                 {metodo === 'envio' && (
                     <div className="space-y-5 animate-fade-in">
+                        {/* Nombre */}
                         <div>
                             <label className="block text-xs font-bold text-neutral-800 mb-1.5 uppercase">Tu nombre</label>
                             <input
@@ -137,19 +203,17 @@ function CartPanel({
                                 className="w-full px-4 py-3 rounded-xl border border-neutral-300 focus:border-[var(--red)] outline-none text-sm bg-white"
                             />
                         </div>
+
+                        {/* Mapa + dirección */}
                         <div>
-                            <label className="block text-xs font-bold text-neutral-800 mb-1.5 uppercase">Dirección</label>
-                            <input
-                                type="text"
-                                placeholder="Calle, número, piso y depto"
-                                value={direccion}
-                                onChange={e => setDireccion(e.target.value)}
-                                className="w-full px-4 py-3 rounded-xl border border-neutral-300 focus:border-[var(--red)] outline-none text-sm bg-white"
-                            />
+                            <label className="block text-xs font-bold text-neutral-800 mb-1.5 uppercase">Dirección de entrega</label>
+                            <p className="text-xs text-neutral-400 mb-2">Escribí tu dirección o tocá el mapa para seleccionarla</p>
+                            <DeliveryMap onAddressChange={handleAddressChange} />
                         </div>
                     </div>
                 )}
 
+                {/* ─── SECCIÓN RETIRO ─── */}
                 {metodo === 'retiro' && (
                     <div>
                         <label className="block text-xs font-bold text-neutral-800 mb-1.5 uppercase">Tu nombre</label>
@@ -160,9 +224,14 @@ function CartPanel({
                             onChange={e => setNombre(e.target.value)}
                             className="w-full px-4 py-3 rounded-xl border border-neutral-300 focus:border-[var(--red)] outline-none text-sm bg-white"
                         />
+                        <div className="mt-4 rounded-xl bg-cream px-4 py-3 text-sm text-neutral-600 border border-neutral-200">
+                            📍 <span className="font-bold text-neutral-800">Loot Burguers</span><br />
+                            <span className="text-xs">ENA, Chubut 1353, B1631 Villa Rosa, Buenos Aires</span>
+                        </div>
                     </div>
                 )}
 
+                {/* Aclaraciones (siempre visible) */}
                 <div>
                     <label className="block text-xs font-bold text-neutral-800 mb-1.5 uppercase">Aclaraciones</label>
                     <textarea
@@ -175,37 +244,50 @@ function CartPanel({
                 </div>
             </div>
 
+            {/* ─── RESUMEN Y TOTAL ─── */}
             <div className="p-6 border-t border-neutral-200 bg-neutral-50 pb-8">
                 <div className="space-y-2 mb-5 text-sm font-medium" style={{ fontFamily: 'var(--font-montserrat)' }}>
                     <div className="flex justify-between text-neutral-600">
                         <span>Subtotal</span>
                         <span>$ {total.toLocaleString('es-AR')}</span>
                     </div>
-                    {metodo === 'envio' && (
+                    {metodo === 'envio' && costoEnvio !== null && (
                         <div className="flex justify-between text-neutral-600">
                             <span>Envío</span>
                             <span>$ {costoEnvio.toLocaleString('es-AR')}</span>
                         </div>
                     )}
+                    {metodo === 'envio' && costoEnvio === null && !outOfRange && (
+                        <div className="flex justify-between text-neutral-400 italic">
+                            <span>Envío</span>
+                            <span>— seleccioná una dirección</span>
+                        </div>
+                    )}
                     <div className="flex justify-between items-center pt-3 border-t border-neutral-200 mt-3">
                         <span className="text-2xl" style={{ fontFamily: 'var(--font-lilita)', color: 'var(--red)' }}>Total</span>
-                        <span className="text-3xl" style={{ fontFamily: 'var(--font-lilita)', color: 'var(--red)' }}>$ {totalFinal.toLocaleString('es-AR')}</span>
+                        <span className="text-3xl" style={{ fontFamily: 'var(--font-lilita)', color: 'var(--red)' }}>
+                            $ {(metodo === 'envio' && costoEnvio !== null ? total + costoEnvio : metodo === 'retiro' ? total : total).toLocaleString('es-AR')}
+                        </span>
                     </div>
                 </div>
 
                 {!canSubmit && (
                     <p className="text-center text-xs text-neutral-400 font-medium mb-3" style={{ fontFamily: 'var(--font-montserrat)' }}>
                         {metodo === 'envio'
-                            ? 'Completá tu nombre y dirección para continuar'
+                            ? outOfRange
+                                ? 'Tu dirección está fuera del rango de entrega'
+                                : 'Completá tu nombre y seleccioná una dirección válida'
                             : 'Completá tu nombre para continuar'}
                     </p>
                 )}
 
                 <button
                     disabled={!canSubmit}
+                    onClick={handleSubmit}
+                    id="btn-enviar-pedido"
                     className={`w-full py-4 rounded-full font-black text-sm text-white tracking-widest shadow-lg transition-all ${canSubmit
-                            ? 'hover:scale-[1.02] cursor-pointer'
-                            : 'opacity-40 cursor-not-allowed'
+                        ? 'hover:scale-[1.02] cursor-pointer'
+                        : 'opacity-40 cursor-not-allowed'
                         }`}
                     style={{ backgroundColor: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}
                 >
