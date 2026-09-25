@@ -4,11 +4,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { useCart } from '@/context/CartContext'
 import dynamic from 'next/dynamic'
 
-// Importar el mapa dinámicamente para evitar SSR (Google Maps requiere browser)
-//
-// 🔵 Sistema RADIAL activo (círculos concéntricos desde el local)
-// Para volver al sistema de POLÍGONOS por barrio, comentá la línea de abajo
-// y descomentá la siguiente:
 const DeliveryMap = dynamic(() => import('./DeliveryMapRadial'), {
     // const DeliveryMap = dynamic(() => import('./DeliveryMap'), {
     ssr: false,
@@ -40,7 +35,7 @@ export default function Carrito() {
 
     return (
         <>
-            {/* ─── BARRA FLOTANTE INFERIOR ─── */}
+            {/* BARRA FLOTANTE INFERIOR */}
             <div className={`fixed bottom-0 left-0 w-full bg-white border-t border-neutral-200 shadow-[0_-10px_30px_rgba(0,0,0,0.08)] z-40 px-6 py-4 flex justify-between items-center sm:px-10 ${isCartOpen ? 'hidden' : ''}`}>
                 <div className="flex flex-col">
                     <span className="text-2xl sm:text-3xl leading-none tracking-wide" style={{ fontFamily: 'var(--font-lilita)', color: 'var(--red)' }}>
@@ -59,7 +54,7 @@ export default function Carrito() {
                 </button>
             </div>
 
-            {/* ─── MODAL LATERAL ─── */}
+            {/* MODAL LATERAL  */}
             {isCartOpen && (
                 <div className="fixed inset-0 z-50 flex items-end sm:items-stretch justify-end bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setIsCartOpen(false)}>
                     <div className="w-full sm:w-[450px] h-[92%] sm:h-full bg-white shadow-2xl flex flex-col rounded-tl-3xl rounded-tr-3xl sm:rounded-none" onClick={(e) => e.stopPropagation()}>
@@ -81,7 +76,7 @@ export default function Carrito() {
     )
 }
 
-// ─── Sub-componente con estado de formulario ────────────────────────────────────
+//  Sub componente con estado de formulario
 function CartPanel({
     metodo, setMetodo, items, total, costoEnvio, setCostoEnvio, totalFinal, updateQuantity, setIsCartOpen
 }: {
@@ -149,7 +144,7 @@ function CartPanel({
 
     const handleSubmit = () => {
         const msg = buildWhatsAppMessage()
-        window.open(`https://wa.me/5491100000000?text=${msg}`, '_blank')
+        window.open(`https://wa.me/5491178220054?text=${msg}`, '_blank')
     }
 
     return (
