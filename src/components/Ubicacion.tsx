@@ -1,5 +1,5 @@
 'use client'
-
+//Panel de Zonas de entregas
 import Image from 'next/image'
 
 export default function Ubicacion() {

@@ -1,5 +1,5 @@
 'use client'
-
+//Panel de menú
 import { useState } from 'react'
 import Image from 'next/image'
 import { useCart } from '@/context/CartContext'

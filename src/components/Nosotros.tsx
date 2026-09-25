@@ -1,5 +1,5 @@
 'use client'
-
+//Panel de Nosotros
 import Image from 'next/image'
 
 export default function NosotrosSection() {
