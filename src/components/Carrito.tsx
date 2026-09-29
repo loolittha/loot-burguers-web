@@ -228,6 +228,43 @@ function CartPanel({
                     </div>
                 )}
 
+                {/* Método de pago */}
+                <div>
+                    <p className="text-xs font-bold text-neutral-800 uppercase mb-3">Método de pago</p>
+                    <div className="flex flex-col gap-2">
+                        <label className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${metodoPago === 'efectivo'
+                            ? 'border-[var(--red)] bg-red-50'
+                            : 'border-neutral-200 bg-white'
+                            }`}>
+                            <input
+                                type="radio"
+                                name="metodoPago"
+                                value="efectivo"
+                                checked={metodoPago === 'efectivo'}
+                                onChange={() => setMetodoPago('efectivo')}
+                                className="accent-[var(--red)] w-4 h-4"
+                            />
+                            <span className={`text-sm font-semibold ${metodoPago === 'efectivo' ? 'text-[var(--red)]' : 'text-neutral-600'
+                                }`}>Pago en Efectivo</span>
+                        </label>
+                        <label className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${metodoPago === 'transferencia'
+                            ? 'border-[var(--red)] bg-red-50'
+                            : 'border-neutral-200 bg-white'
+                            }`}>
+                            <input
+                                type="radio"
+                                name="metodoPago"
+                                value="transferencia"
+                                checked={metodoPago === 'transferencia'}
+                                onChange={() => setMetodoPago('transferencia')}
+                                className="accent-[var(--red)] w-4 h-4"
+                            />
+                            <span className={`text-sm font-semibold ${metodoPago === 'transferencia' ? 'text-[var(--red)]' : 'text-neutral-600'
+                                }`}>Transferencia Bancaria</span>
+                        </label>
+                    </div>
+                </div>
+
                 {/* Aclaraciones (siempre visible) */}
                 <div>
                     <label className="block text-xs font-bold text-neutral-800 mb-1.5 uppercase">Aclaraciones</label>
@@ -268,42 +305,6 @@ function CartPanel({
                     </div>
                 </div>
 
-                {/* Método de pago */}
-                <div className="mb-5" style={{ fontFamily: 'var(--font-montserrat)' }}>
-                    <p className="text-xs font-bold text-neutral-800 uppercase mb-3">Método de pago</p>
-                    <div className="flex flex-col gap-2">
-                        <label className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${metodoPago === 'efectivo'
-                            ? 'border-[var(--red)] bg-red-50'
-                            : 'border-neutral-200 bg-white'
-                            }`}>
-                            <input
-                                type="radio"
-                                name="metodoPago"
-                                value="efectivo"
-                                checked={metodoPago === 'efectivo'}
-                                onChange={() => setMetodoPago('efectivo')}
-                                className="accent-[var(--red)] w-4 h-4"
-                            />
-                            <span className={`text-sm font-semibold ${metodoPago === 'efectivo' ? 'text-[var(--red)]' : 'text-neutral-600'
-                                }`}>Pago en Efectivo</span>
-                        </label>
-                        <label className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${metodoPago === 'transferencia'
-                            ? 'border-[var(--red)] bg-red-50'
-                            : 'border-neutral-200 bg-white'
-                            }`}>
-                            <input
-                                type="radio"
-                                name="metodoPago"
-                                value="transferencia"
-                                checked={metodoPago === 'transferencia'}
-                                onChange={() => setMetodoPago('transferencia')}
-                                className="accent-[var(--red)] w-4 h-4"
-                            />
-                            <span className={`text-sm font-semibold ${metodoPago === 'transferencia' ? 'text-[var(--red)]' : 'text-neutral-600'
-                                }`}>Transferencia</span>
-                        </label>
-                    </div>
-                </div>
 
                 {!canSubmit && (
                     <p className="text-center text-xs text-neutral-400 font-medium mb-3" style={{ fontFamily: 'var(--font-montserrat)' }}>
