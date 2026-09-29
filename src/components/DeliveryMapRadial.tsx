@@ -188,15 +188,12 @@ export default function DeliveryMapRadial({ onAddressChange }: DeliveryMapRadial
                 }}
             >
                 <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-base pointer-events-none">
-                        📍
-                    </span>
                     <input
                         ref={inputRef}
                         id="delivery-address-input"
                         type="text"
                         placeholder="Escribí tu dirección..."
-                        className="w-full pl-9 pr-9 py-3 rounded-xl border border-neutral-300 focus:border-[var(--red)] outline-none text-sm bg-white"
+                        className="w-full pl-4 pr-9 py-3 rounded-xl border border-neutral-300 focus:border-[var(--red)] outline-none text-sm bg-white"
                         style={{ fontFamily: 'var(--font-montserrat)' }}
                         onChange={e => { if (e.target.value === '') handleClear() }}
                     />

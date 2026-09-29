@@ -94,6 +94,7 @@ function CartPanel({
     const [direccion, setDireccion] = useState('')
     const [aclaraciones, setAclaraciones] = useState('')
     const [outOfRange, setOutOfRange] = useState(false)
+    const [metodoPago, setMetodoPago] = useState<'efectivo' | 'transferencia'>('efectivo')
 
     // Resetear dirección al cambiar de método
     const handleMetodo = (m: 'envio' | 'retiro') => {
@@ -135,8 +136,10 @@ function CartPanel({
             lines.push(`💳 *Total:* $${total.toLocaleString('es-AR')}`)
         }
 
+        lines.push(``, `💳 *Método de pago:* ${metodoPago === 'efectivo' ? 'Efectivo' : 'Transferencia Bancaria'}`)
+
         if (aclaraciones.trim()) {
-            lines.push(``, `📝 *Aclaraciones:* ${aclaraciones}`)
+            lines.push(``, `📋 *Aclaraciones:* ${aclaraciones}`)
         }
 
         return encodeURIComponent(lines.join('\n'))
@@ -202,7 +205,6 @@ function CartPanel({
                         {/* Mapa + dirección */}
                         <div>
                             <label className="block text-xs font-bold text-neutral-800 mb-1.5 uppercase">Dirección de entrega</label>
-                            <p className="text-xs text-neutral-400 mb-2">Escribí tu dirección o tocá el mapa para seleccionarla</p>
                             <DeliveryMap onAddressChange={handleAddressChange} />
                         </div>
                     </div>
@@ -255,7 +257,7 @@ function CartPanel({
                     {metodo === 'envio' && costoEnvio === null && !outOfRange && (
                         <div className="flex justify-between text-neutral-400 italic">
                             <span>Envío</span>
-                            <span>— seleccioná una dirección</span>
+                            <span>seleccioná una dirección</span>
                         </div>
                     )}
                     <div className="flex justify-between items-center pt-3 border-t border-neutral-200 mt-3">
@@ -263,6 +265,43 @@ function CartPanel({
                         <span className="text-3xl" style={{ fontFamily: 'var(--font-lilita)', color: 'var(--red)' }}>
                             $ {(metodo === 'envio' && costoEnvio !== null ? total + costoEnvio : metodo === 'retiro' ? total : total).toLocaleString('es-AR')}
                         </span>
+                    </div>
+                </div>
+
+                {/* Método de pago */}
+                <div className="mb-5" style={{ fontFamily: 'var(--font-montserrat)' }}>
+                    <p className="text-xs font-bold text-neutral-800 uppercase mb-3">Método de pago</p>
+                    <div className="flex flex-col gap-2">
+                        <label className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${metodoPago === 'efectivo'
+                            ? 'border-[var(--red)] bg-red-50'
+                            : 'border-neutral-200 bg-white'
+                            }`}>
+                            <input
+                                type="radio"
+                                name="metodoPago"
+                                value="efectivo"
+                                checked={metodoPago === 'efectivo'}
+                                onChange={() => setMetodoPago('efectivo')}
+                                className="accent-[var(--red)] w-4 h-4"
+                            />
+                            <span className={`text-sm font-semibold ${metodoPago === 'efectivo' ? 'text-[var(--red)]' : 'text-neutral-600'
+                                }`}>Pago en Efectivo</span>
+                        </label>
+                        <label className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${metodoPago === 'transferencia'
+                            ? 'border-[var(--red)] bg-red-50'
+                            : 'border-neutral-200 bg-white'
+                            }`}>
+                            <input
+                                type="radio"
+                                name="metodoPago"
+                                value="transferencia"
+                                checked={metodoPago === 'transferencia'}
+                                onChange={() => setMetodoPago('transferencia')}
+                                className="accent-[var(--red)] w-4 h-4"
+                            />
+                            <span className={`text-sm font-semibold ${metodoPago === 'transferencia' ? 'text-[var(--red)]' : 'text-neutral-600'
+                                }`}>Transferencia</span>
+                        </label>
                     </div>
                 </div>
 
