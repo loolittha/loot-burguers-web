@@ -146,7 +146,7 @@ function CartPanel({
     }
 
     const handleSubmit = () => {
-        // 1. Detalle del pedido para el Excel
+        // 1. Detalle del pedido para el xls
         const detalleCombo = items.map(i => `${i.quantity}x ${i.name}`).join(', ')
 
         // 2. Estructura que espera el Google Apps Script
