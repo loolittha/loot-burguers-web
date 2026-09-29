@@ -116,51 +116,64 @@ function CartPanel({
             : nombre.trim() !== ''
 
     const buildWhatsAppMessage = () => {
-        // Emojis como Unicode escape para evitar corrupción de bytes en móviles
-        const E = {
-            nombre: '\uD83D\uDC64', // 👤
-            burger: '\uD83C\uDF54', // 🍔
-            dinero: '\uD83D\uDCB0', // 💰
-            pin: '\uD83D\uDCCD', // 📍
-            auto: '\uD83D\uDE97', // 🚗
-            tarjeta: '\uD83D\uDCB3', // 💳
-            tienda: '\uD83C\uDFEA', // 🏪
-            nota: '\uD83D\uDCCB', // 📋
-        }
-
         const lines = [
             `*Hola! Cómo estás? Quería hacer un pedido:*`,
             ``,
-            `${E.nombre} *Nombre:* ${nombre}`,
+            `*Nombre:* ${nombre}`,
             ``,
-            `${E.burger} *Productos:*`,
+            `*Productos:*`,
             ...items.map(i => `• ${i.name} x${i.quantity} — $${(i.price * i.quantity).toLocaleString('es-AR')}`),
             ``,
-            `${E.dinero} *Subtotal:* $${total.toLocaleString('es-AR')}`,
+            `*Subtotal:* $${total.toLocaleString('es-AR')}`,
         ]
 
         if (metodo === 'envio') {
-            lines.push(`${E.pin} *Dirección:* ${direccion}`)
-            lines.push(`${E.auto} *Costo de envío:* $${costoEnvio?.toLocaleString('es-AR')}`)
-            lines.push(`${E.tarjeta} *Total con envío:* $${(total + (costoEnvio ?? 0)).toLocaleString('es-AR')}`)
+            lines.push(`*Dirección:* ${direccion}`)
+            lines.push(`*Costo de envío:* $${costoEnvio?.toLocaleString('es-AR')}`)
+            lines.push(`*Total con envío:* $${(total + (costoEnvio ?? 0)).toLocaleString('es-AR')}`)
         } else {
-            lines.push(`${E.tienda} *Modalidad:* Retiro en local`)
-            lines.push(`${E.tarjeta} *Total:* $${total.toLocaleString('es-AR')}`)
+            lines.push(`*Modalidad:* Retiro en local`)
+            lines.push(`*Total:* $${total.toLocaleString('es-AR')}`)
         }
 
-        lines.push(``, `${E.tarjeta} *Método de pago:* ${metodoPago === 'efectivo' ? 'Efectivo' : 'Transferencia'}`)
+        lines.push(``, `*Método de pago:* ${metodoPago === 'efectivo' ? 'Efectivo' : 'Transferencia'}`)
 
         if (aclaraciones.trim()) {
-            lines.push(``, `${E.nota} *Aclaraciones:* ${aclaraciones}`)
+            lines.push(``, `*Aclaraciones:* ${aclaraciones}`)
         }
 
         return lines.join('\n')
     }
 
     const handleSubmit = () => {
+        // 1. Detalle del pedido para el Excel
+        const detalleCombo = items.map(i => `${i.quantity}x ${i.name}`).join(', ')
+
+        // 2. Estructura que espera el Google Apps Script
+        const pedidoData = {
+            ticket: Math.floor(Math.random() * 100000).toString(),
+            nombre: nombre,
+            detalle: detalleCombo,
+            pago: metodoPago === 'efectivo' ? 'Efectivo' : 'Transferencia',
+            canal: metodo === 'envio' ? 'Delivery' : 'Take Away',
+            direccion: metodo === 'envio' ? direccion : 'Retiro en local',
+            costoEnvio: costoEnvio || 0,
+            total: totalFinal,
+            aclaraciones: aclaraciones,
+            telefono: '-',
+        }
+
+        // 3. Fire and forget guarda en Excel en segundo plano
+        fetch('https://script.google.com/macros/s/AKfycbz3uByN29_QZBqmyq3e7O1sJTks-xx8mGMqTmaia9NmM7ZOBbS_yc5ppqsxs0NtNOFCcg/exec', {
+            method: 'POST',
+            mode: 'no-cors', //necesario para evitar bloqueo CORS con Apps Script
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pedidoData),
+        }).catch(err => console.error('Error al guardar en Excel:', err))
+
+        // 4. Redirección inmediata a WhatsApp (mismo gesto del usuario no se bloquea el popup)
         const msg = buildWhatsAppMessage()
-        // encodeURIComponent aplicado una sola vez sobre texto plano — evita doble-encoding
-        window.open(`https://wa.me/5491178220054?text=${encodeURIComponent(msg)}`, '_blank')
+        window.open(`https://api.whatsapp.com/send?phone=5491178220054&text=${encodeURIComponent(msg)}`, '_blank')
     }
 
     return (
