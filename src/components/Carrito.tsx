@@ -116,38 +116,51 @@ function CartPanel({
             : nombre.trim() !== ''
 
     const buildWhatsAppMessage = () => {
+        // Emojis como Unicode escape para evitar corrupción de bytes en móviles
+        const E = {
+            nombre: '\uD83D\uDC64', // 👤
+            burger: '\uD83C\uDF54', // 🍔
+            dinero: '\uD83D\uDCB0', // 💰
+            pin: '\uD83D\uDCCD', // 📍
+            auto: '\uD83D\uDE97', // 🚗
+            tarjeta: '\uD83D\uDCB3', // 💳
+            tienda: '\uD83C\uDFEA', // 🏪
+            nota: '\uD83D\uDCCB', // 📋
+        }
+
         const lines = [
-            `🍔 *Nuevo pedido de Loot Burguers*`,
+            `*Hola! Cómo estás? Quería hacer un pedido:*`,
             ``,
-            `👤 *Nombre:* ${nombre}`,
+            `${E.nombre} *Nombre:* ${nombre}`,
             ``,
-            `🛒 *Productos:*`,
+            `${E.burger} *Productos:*`,
             ...items.map(i => `• ${i.name} x${i.quantity} — $${(i.price * i.quantity).toLocaleString('es-AR')}`),
             ``,
-            `💰 *Subtotal:* $${total.toLocaleString('es-AR')}`,
+            `${E.dinero} *Subtotal:* $${total.toLocaleString('es-AR')}`,
         ]
 
         if (metodo === 'envio') {
-            lines.push(`📍 *Dirección:* ${direccion}`)
-            lines.push(`🚗 *Costo de envío:* $${costoEnvio?.toLocaleString('es-AR')}`)
-            lines.push(`💳 *Total con envío:* $${(total + (costoEnvio ?? 0)).toLocaleString('es-AR')}`)
+            lines.push(`${E.pin} *Dirección:* ${direccion}`)
+            lines.push(`${E.auto} *Costo de envío:* $${costoEnvio?.toLocaleString('es-AR')}`)
+            lines.push(`${E.tarjeta} *Total con envío:* $${(total + (costoEnvio ?? 0)).toLocaleString('es-AR')}`)
         } else {
-            lines.push(`🏪 *Modalidad:* Retiro en local`)
-            lines.push(`💳 *Total:* $${total.toLocaleString('es-AR')}`)
+            lines.push(`${E.tienda} *Modalidad:* Retiro en local`)
+            lines.push(`${E.tarjeta} *Total:* $${total.toLocaleString('es-AR')}`)
         }
 
-        lines.push(``, `💳 *Método de pago:* ${metodoPago === 'efectivo' ? 'Efectivo' : 'Transferencia Bancaria'}`)
+        lines.push(``, `${E.tarjeta} *Método de pago:* ${metodoPago === 'efectivo' ? 'Efectivo' : 'Transferencia'}`)
 
         if (aclaraciones.trim()) {
-            lines.push(``, `📋 *Aclaraciones:* ${aclaraciones}`)
+            lines.push(``, `${E.nota} *Aclaraciones:* ${aclaraciones}`)
         }
 
-        return encodeURIComponent(lines.join('\n'))
+        return lines.join('\n')
     }
 
     const handleSubmit = () => {
         const msg = buildWhatsAppMessage()
-        window.open(`https://wa.me/5491178220054?text=${msg}`, '_blank')
+        // encodeURIComponent aplicado una sola vez sobre texto plano — evita doble-encoding
+        window.open(`https://wa.me/5491178220054?text=${encodeURIComponent(msg)}`, '_blank')
     }
 
     return (
@@ -260,7 +273,7 @@ function CartPanel({
                                 className="accent-[var(--red)] w-4 h-4"
                             />
                             <span className={`text-sm font-semibold ${metodoPago === 'transferencia' ? 'text-[var(--red)]' : 'text-neutral-600'
-                                }`}>Transferencia Bancaria</span>
+                                }`}>Transferencia</span>
                         </label>
                     </div>
                 </div>

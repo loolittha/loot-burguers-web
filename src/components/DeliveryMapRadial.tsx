@@ -110,7 +110,10 @@ export default function DeliveryMapRadial({ onAddressChange }: DeliveryMapRadial
         if (!place?.geometry?.location) return
         const lat = place.geometry.location.lat()
         const lng = place.geometry.location.lng()
-        const address = place.formatted_address ?? inputRef.current?.value ?? ''
+        // Usamos el texto que escribió el usuario (más completo para barrios privados).
+        // formatted_address de Google suele recortar nombres de countries/barrios privados.
+        const userTyped = inputRef.current?.value?.trim()
+        const address = userTyped || place.formatted_address || ''
         detectZone(lat, lng, address)
     }, [detectZone])
 
