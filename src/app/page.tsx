@@ -31,18 +31,18 @@ function Hero() {
     >
       <div className="max-w-7xl mx-auto px-6 py-12 md:py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
 
-        {/* ── Columna izquierda: textos ── */}
+        {/* ── Título de la web ── */}
         <div>
           {/*Título principal*/}
           <h1
             className="text-6xl sm:text-7xl md:text-8xl leading-[0.95] mb-6"
             style={{ fontFamily: 'var(--font-lilita)' }}
           >
-            <span style={{ color: '#1E1E1E' }}>LO SIMPLE,</span>
+            <span style={{ color: '#1E1E1E' }}>CADA BURGER,</span>
             <br />
-            <span style={{ color: 'var(--red)' }}>HECHO</span>
+            <span style={{ color: 'var(--red)' }}>UN</span>
             <br />
-            <span style={{ color: 'var(--red)' }}>INCREÍBLE.</span>
+            <span style={{ color: 'var(--red)' }}>TESORO.</span>
           </h1>
 
           {/*Descripción*/}
@@ -53,8 +53,8 @@ function Hero() {
               color: '#3D3D3D',
             }}
           >
-            Loot ofrece Smash burgers de alta calidad utilizando ingredientes
-            sofisticados, salsas especiales y hamburguesas secretas.
+            Smash burgers hechas al momento,con salsas que no vas
+            a encontrar en otro lado.<strong> Una mordida y entendés por qué...</strong>
           </p>
 
           {/*CTA*/}
@@ -68,7 +68,7 @@ function Hero() {
               boxShadow: '0 4px 18px rgba(193,18,31,0.35)',
             }}
           >
-            HACÉ TU PEDIDO
+            PEDÍ TU BURGER
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
