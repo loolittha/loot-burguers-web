@@ -46,7 +46,7 @@ export default function Ubicacion() {
                     style={{ borderColor: 'rgba(253, 248, 240, 0.25)' }}
                 >
                     <Image
-                        src="/MapaCalor.jpg"
+                        src="/mapa/MapaCalor.jpg"
                         alt="Zonas de entrega Loot Burgers"
                         fill
                         className="object-cover"

@@ -26,7 +26,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Un medallón y doble cheddar.',
     price: 8000,
     category: 'Hamburguesas',
-    image: '/CheeseSimple.png',
+    image: '/menu/CheeseSimple.png',
   },
   {
     id: 'cheese-doble',
@@ -34,8 +34,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Doble medallón y triple cheddar.',
     price: 11000,
     category: 'Hamburguesas',
-    image: '/CheeseDoble.jpg',
-    badge: 'La más pedida',
+    image: '/menu/CheeseDoble.jpg',
   },
   {
     id: 'american-simple',
@@ -43,7 +42,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Un medallón, doble cheddar, lechuga, tomate y cebolla grill.',
     price: 9500,
     category: 'Hamburguesas',
-    image: '/AmericanSimple.png',
+    image: '/menu/AmericanSimple.png',
   },
   {
     id: 'american-doble',
@@ -51,7 +50,8 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Doble medallón, triple cheddar, lechuga, tomate y cebolla grill.',
     price: 12500,
     category: 'Hamburguesas',
-    image: '/AmericanDoble.jpg',
+    image: '/menu/AmericanDoble.jpg',
+    badge: 'La más pedida',
   },
   {
     id: 'crispy-simple',
@@ -59,7 +59,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Un medallón, doble cheddar, cebolla crispy y panceta ahumada.',
     price: 12000,
     category: 'Hamburguesas',
-    image: '/CrispySimple.png',
+    image: '/menu/CrispySimple.png',
   },
   {
     id: 'crispy-doble',
@@ -67,7 +67,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Doble medallón, triple cheddar, cebolla crispy y panceta ahumada.',
     price: 15000,
     category: 'Hamburguesas',
-    image: '/CrispyDoble.jpg',
+    image: '/menu/CrispyDoble.jpg',
   },
   {
     id: 'triple-burger',
@@ -75,7 +75,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Triple medallón, cuádruple queso y salsa loot.',
     price: 14000,
     category: 'Hamburguesas',
-    image: '/SecretMenu.png',
+    image: '/menu/SecretMenu.png',
     badge: 'Secret Menu',
   },
   // ── Combos (con papas) ──────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: '1 Cheese simple + 1 American simple + 1 Crispy Bacon simple + 1 porción de papas + gaseosa a elección.',
     price: 30000,
     category: 'Combos',
-    image: '/StarterPackSimple.png',
+    image: '/menu/StarterPackSimple.png',
     badge: 'Para compartir',
   },
   {
@@ -94,7 +94,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Un medallón, doble cheddar + papas.',
     price: 12000,
     category: 'Combos',
-    image: '/CheeseSimple.png',
+    image: '/menu/CheeseSimple.png',
   },
   {
     id: 'combo-cheese-doble',
@@ -102,7 +102,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Doble medallón, triple cheddar, salsa loot + papas.',
     price: 15000,
     category: 'Combos',
-    image: '/CheeseDoble.jpg',
+    image: '/menu/CheeseDoble.jpg',
   },
   {
     id: 'combo-american-simple',
@@ -110,7 +110,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Un medallón, doble cheddar, lechuga, tomate, cebolla grill + papas.',
     price: 13500,
     category: 'Combos',
-    image: '/AmericanSimple.png',
+    image: '/menu/AmericanSimple.png',
   },
   {
     id: 'combo-american-doble',
@@ -118,7 +118,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Doble medallón, triple cheddar, lechuga, tomate, cebolla grill + papas.',
     price: 16500,
     category: 'Combos',
-    image: '/AmericanDoble.jpg',
+    image: '/menu/AmericanDoble.jpg',
   },
   {
     id: 'combo-crispy-simple',
@@ -126,7 +126,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Un medallón, doble cheddar, cebolla crispy, panceta ahumada + papas.',
     price: 16000,
     category: 'Combos',
-    image: '/CrispySimple.png',
+    image: '/menu/CrispySimple.png',
   },
   {
     id: 'combo-crispy-doble',
@@ -134,7 +134,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Doble medallón, triple cheddar, cebolla crispy, panceta ahumada + papas.',
     price: 19000,
     category: 'Combos',
-    image: '/CrispyDoble.jpg',
+    image: '/menu/CrispyDoble.jpg',
   },
   {
     id: 'combo-triple',
@@ -142,17 +142,35 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Triple medallón, cuádruple cheddar, salsa loot + papas.',
     price: 18000,
     category: 'Combos',
-    image: '/SecretMenu.png',
+    image: '/menu/SecretMenu.png',
     badge: 'Secret Menu',
   },
   // ── Adicionales ─────────────────────────────────────────────────────────────
+  {
+    id: 'coca-cola',
+    name: 'Coca Cola',
+    description: 'Lata 354ml. El clásico acompañante de una buena burger.',
+    price: 2700,
+    category: 'Adicionales',
+    image: '/menu/CocaComun.png',
+    badge: 'Nuevo',
+  },
+  {
+    id: 'coca-zero',
+    name: 'Coca Cola Zero',
+    description: 'Lata 354ml. El clásico acompañante de una buena burger.',
+    price: 2700,
+    category: 'Adicionales',
+    image: '/menu/CocaZero.png',
+    badge: 'Nuevo',
+  },
   {
     id: 'papas',
     name: 'Porción de papas',
     description: 'Papas fritas crocantes, perfectas para acompañar.',
     price: 4000,
     category: 'Adicionales',
-    image: '/Papas.png',
+    image: '/menu/Papas.png',
   },
   {
     id: 'medallon',
@@ -160,7 +178,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Medallón de carne fresca, cocinado a la plancha.',
     price: 3000,
     category: 'Adicionales',
-    image: '/MedallonCarne.png',
+    image: '/menu/MedallonCarne.png',
   },
   {
     id: 'cheddar',
@@ -168,7 +186,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Cheddar americano fundido, el clásico de Loot.',
     price: 1000,
     category: 'Adicionales',
-    image: '/FetaCheddar.jpg',
+    image: '/menu/FetaCheddar.jpg',
   },
   {
     id: 'panceta',
@@ -176,7 +194,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Panceta ahumada premium, crujiente y sabrosa.',
     price: 3000,
     category: 'Adicionales',
-    image: '/FetasPanceta.png',
+    image: '/menu/FetasPanceta.png',
   },
   {
     id: 'salsa-loot',
@@ -184,7 +202,7 @@ const MENU_ITEMS: MenuItem[] = [
     description: 'Nuestra salsa secreta con pepinillos en conserva. Adictiva.',
     price: 600,
     category: 'Adicionales',
-    image: '/SalsaLoot.png',
+    image: '/menu/SalsaLoot.png',
   },
 ]
 
@@ -298,6 +316,11 @@ export default function MenuSection() {
         >
           ¡Vení a Lootear!
         </h2>
+        {/* Badge novedad bebidas */}
+        <div className="mt-4 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold" style={{ backgroundColor: 'var(--red)', color: '#fff', fontFamily: 'var(--font-montserrat)' }}>
+          <span>&#x1F379;</span>
+          <span>Ahora sumamos bebidas</span>
+        </div>
       </div>
 
       {/* Category Tabs */}

@@ -54,7 +54,7 @@ export default function Navbar() {
           className="flex items-center shrink-0 z-10 relative cursor-pointer"
         >
           <Image
-            src="/LogoLootMuñeco.png"
+            src="/branding/LogoLB.png"
             alt="Loot Burgers"
             width={180}
             height={64}

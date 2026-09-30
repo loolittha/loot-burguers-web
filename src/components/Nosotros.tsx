@@ -38,16 +38,16 @@ export default function NosotrosSection() {
                             muted
                             playsInline
                             preload="auto"
-                            src="/PanelNosotrosHamburguesa.mp4"
+                            src="/videos/PanelNosotrosHamburguesa.mp4"
                             className="w-full h-full object-cover"
                             aria-hidden="true"
                         >
-                            <source src="/PanelNosotrosHamburguesa.mp4" type="video/mp4" />
+                            <source src="/videos/PanelNosotrosHamburguesa.mp4" type="video/mp4" />
                         </video>
                     </div>
                 </div>
 
-                {/* ── Columna Derecha: Textos y Botón Píldora más pequeño ── */}
+                {/* ── Columna Derecha: Textos y Botón  ── */}
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
                     <h2
                         id="nosotros-title"

@@ -90,14 +90,14 @@ function Hero() {
               className="w-full h-full object-cover"
               aria-hidden="true"
             >
-              <source src="/HeroVideo.mp4" type="video/mp4" />
+              <source src="/videos/HeroVideo.mp4" type="video/mp4" />
             </video>
           </div>
 
           {/* Lootsito */}
           <div className="absolute -bottom-5 -right-10 sm:-bottom-10 sm:-right-12 w-28 h-24 sm:w-40 sm:h-40 z-10 pointer-events-none drop-shadow-2xl transform rotate-6">
             <Image
-              src="/logo-loot-inv.png"
+              src="/branding/logo-loot-inv.png"
               alt="Mascota Loot Burgers"
               fill
               className="object-contain"
@@ -160,7 +160,7 @@ function Footer() {
           {/* Columna Centro: Logo sobresaliente hacia arriba */}
           <div className="flex flex-col items-center justify-center order-first md:order-none -mt-16 md:-mt-24 relative z-40">
             <Image
-              src="/Lootsito.png"
+              src="/branding/LogoLBrojo.png"
               alt="Loot Burgers"
               width={160}
               height={160}
