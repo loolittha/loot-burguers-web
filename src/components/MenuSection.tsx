@@ -1,5 +1,5 @@
 'use client'
-//Panel de menú
+// Panel de menú
 import { useState } from 'react'
 import Image from 'next/image'
 import { useCart } from '@/context/CartContext'
@@ -12,9 +12,16 @@ interface MenuItem {
   name: string
   description: string
   price: number
-  category: Exclude<Category, 'Todo'>
+  category: Category
   image: string
   badge?: string
+  /**
+   * OPCIONAL, para cuando haya más burgers: los ítems con el mismo `group`
+   * comparten una fila con selector Simple/Doble. Hoy ningún ítem lo usa.
+   */
+  group?: string
+  /** Etiqueta del selector (Simple, Doble...). Solo se usa junto con `group`. */
+  size?: string
 }
 
 // ─── Menu Data ────────────────────────────────────────────────────────────────
@@ -71,8 +78,8 @@ const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'triple-burger',
-    name: 'La triple 🧀',
-    description: 'Triple medallón, cuádruple queso y salsa loot.',
+    name: 'La Triple',
+    description: 'Triple medallón, cuádruple queso y salsa Loot.',
     price: 14000,
     category: 'Hamburguesas',
     image: '/menu/SecretMenu.png',
@@ -82,7 +89,8 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'starter-pack',
     name: 'Starter Pack',
-    description: '1 Cheese simple + 1 American simple + 1 Crispy Bacon simple + 1 porción de papas + gaseosa a elección.',
+    description:
+      '1 Cheese simple + 1 American simple + 1 Crispy Bacon simple + 1 porción de papas + gaseosa a elección.',
     price: 30000,
     category: 'Combos',
     image: '/menu/StarterPackSimple.png',
@@ -99,7 +107,7 @@ const MENU_ITEMS: MenuItem[] = [
   {
     id: 'combo-cheese-doble',
     name: 'Combo Cheeseburger doble',
-    description: 'Doble medallón, triple cheddar, salsa loot + papas.',
+    description: 'Doble medallón, triple cheddar, salsa Loot + papas.',
     price: 15000,
     category: 'Combos',
     image: '/menu/CheeseDoble.jpg',
@@ -138,8 +146,8 @@ const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'combo-triple',
-    name: 'Combo La triple 🧀',
-    description: 'Triple medallón, cuádruple cheddar, salsa loot + papas.',
+    name: 'Combo La Triple',
+    description: 'Triple medallón, cuádruple cheddar, salsa Loot + papas.',
     price: 18000,
     category: 'Combos',
     image: '/menu/SecretMenu.png',
@@ -208,6 +216,24 @@ const MENU_ITEMS: MenuItem[] = [
 
 const CATEGORIES: Category[] = ['Hamburguesas', 'Combos', 'Adicionales']
 
+const CATEGORY_NOTES: Record<Category, React.ReactNode> = {
+  Hamburguesas: <>Las burgers van solas. Para sumar papas, elegí un <strong>combo</strong> o agregalas en <strong>Adicionales</strong>.</>,
+  Combos: <>Todos los combos traen <strong>papas fritas</strong>.</>,
+  Adicionales: <>Ahora sumamos <strong>bebidas</strong>.</>,
+}
+
+// ─── Cart adapter ─────────────────────────────────────────────────────────────
+// updateQuantity(id, delta): delta -1 resta; cuando quantity llega a 0 CartContext lo elimina.
+function useMenuCart() {
+  const { items, addToCart, updateQuantity } = useCart()
+
+  return {
+    getQuantity: (id: string) => items.find((i) => i.id === id)?.quantity ?? 0,
+    add: (item: MenuItem) => addToCart(item),
+    remove: (id: string) => updateQuantity(id, -1),
+  }
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('es-AR', {
@@ -218,165 +244,270 @@ function formatPrice(price: number): string {
   }).format(price)
 }
 
-// ─── MenuCard ─────────────────────────────────────────────────────────────────
-function MenuCard({ item, onAdd }: { item: MenuItem; onAdd: () => void }) {
+/** Agrupa ítems que comparten `group` y respeta el orden original. Sin `group`, cada ítem es su propia fila. */
+function groupItems(items: MenuItem[]): MenuItem[][] {
+  const map = new Map<string, MenuItem[]>()
+  for (const item of items) {
+    const key = item.group ?? item.id
+    map.set(key, [...(map.get(key) ?? []), item])
+  }
+  return Array.from(map.values())
+}
+
+// ─── Icons ────────────────────────────────────────────────────────────────────
+const iconProps = {
+  viewBox: '0 0 24 24',
+  className: 'h-5 w-5',
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 3,
+  strokeLinecap: 'round' as const,
+  'aria-hidden': true,
+}
+
+function PlusIcon() {
   return (
-    <article
-      className="card-hover flex flex-col rounded-2xl overflow-hidden bg-white"
-      style={{ boxShadow: 'var(--shadow-md)' }}
-      aria-label={item.name}
+    <svg {...iconProps}>
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  )
+}
+
+function MinusIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="M5 12h14" />
+    </svg>
+  )
+}
+
+// Estilos
+const CARD_BG = 'bg-[color-mix(in_srgb,var(--cream)_45%,white)]'
+const HARD_SHADOW = 'shadow-[2px_2px_0_var(--brown)]'
+
+// ─── MenuRow ──────────────────────────────────────────────────────────────────
+interface MenuRowProps {
+  variants: MenuItem[]
+  index: number
+  getQuantity: (id: string) => number
+  onAdd: (item: MenuItem) => void
+  onRemove: (id: string) => void
+}
+
+function MenuRow({ variants, index, getQuantity, onAdd, onRemove }: MenuRowProps) {
+  // Con variantes, arranca seleccionada la que tenga badge (ej. "La más pedida").
+  const [selectedIndex, setSelectedIndex] = useState(() => {
+    const featured = variants.findIndex((v) => v.badge)
+    return featured >= 0 ? featured : 0
+  })
+
+  const item = variants[selectedIndex]
+  const quantity = getQuantity(item.id)
+  const title = item.group ?? item.name
+  const hasSizes = variants.length > 1
+  const isSecret = item.badge === 'Secret Menu'
+
+  const titleColor = isSecret ? 'var(--cream)' : 'var(--brown)'
+  const descColor = isSecret ? 'color-mix(in srgb, var(--cream) 80%, transparent)' : 'var(--gray-text)'
+  const priceColor = isSecret ? 'var(--cream)' : 'var(--red)'
+  // Reposo: borde fino y sombra suave. La sombra dura queda solo para el hover.
+  const borderClass = isSecret
+    ? 'border-2 border-[color:var(--brown)]'
+    : 'border border-[color:color-mix(in_srgb,var(--brown)_18%,transparent)]'
+
+  const restShadow = isSecret
+    ? 'shadow-[4px_4px_0_var(--red)]'
+    : 'shadow-[0_8px_20px_-10px_color-mix(in_srgb,var(--brown)_40%,transparent)]'
+
+  const hoverShadowColor = isSecret ? 'var(--red)' : 'var(--brown)'
+
+  return (
+    <li
+      className={`menu-card menu-card-enter flex gap-3 rounded-3xl p-3 md:gap-4 md:p-4 ${borderClass} ${restShadow} ${isSecret ? 'bg-[var(--brown)]' : CARD_BG}`}
+      style={{ animationDelay: `${index * 60}ms`, '--card-shadow': hoverShadowColor } as React.CSSProperties}
     >
-      {/* Image */}
-      <div className="relative w-full h-52 overflow-hidden">
-        <Image
-          src={item.image}
-          alt={item.name}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          quality={95}
-          className="object-cover transition-transform duration-500 hover:scale-105"
-        />
-        {/* Badge */}
+      {/* Texto */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        <h3 className="text-xl md:text-2xl leading-tight" style={{ fontFamily: 'var(--font-lilita)', color: titleColor }}>
+          {title}
+        </h3>
+
+        <p className="mt-1 text-base leading-snug" style={{ fontFamily: 'var(--font-montserrat)', color: descColor }}>
+          {item.description}
+        </p>
+
+        {/* Selector de tamaño: solo aparece si los ítems tienen `group` */}
+        {hasSizes && (
+          <div
+            role="radiogroup"
+            aria-label={`Tamaño de ${title}`}
+            className="mt-2 inline-flex self-start rounded-full border-2 border-[color:var(--brown)] p-0.5 text-xs font-bold"
+            style={{ fontFamily: 'var(--font-montserrat)' }}
+          >
+            {variants.map((v, i) => (
+              <button
+                key={v.id}
+                type="button"
+                role="radio"
+                aria-checked={i === selectedIndex}
+                onClick={() => setSelectedIndex(i)}
+                className={`rounded-full px-3 py-1.5 transition-colors ${i === selectedIndex ? 'bg-[var(--red)] text-white' : 'text-[color:var(--brown)]'
+                  }`}
+              >
+                {v.size}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <p className="mt-auto pt-2 text-lg font-bold" style={{ fontFamily: 'var(--font-montserrat)', color: priceColor }}>
+          {formatPrice(item.price)}
+        </p>
+      </div>
+
+      {/* Foto + control de cantidad */}
+      <div className="relative h-32 w-32 shrink-0 self-start md:h-40 md:w-40">
+        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-[var(--cream)]">
+          <Image key={item.id} src={item.image} alt={item.name} fill sizes="(max-width: 768px) 224px, 256px" quality={95} className="menu-card-img object-cover" />
+        </div>
+
         {item.badge && (
           <span
-            className="absolute top-3 left-3 text-xs font-bold text-white px-3 py-1 rounded-full"
+            className="absolute -left-2 -top-2 -rotate-3 rounded-full border-2 border-[color:var(--brown)] px-2 py-0.5 text-[11px] font-bold text-white"
             style={{ backgroundColor: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}
           >
             {item.badge}
           </span>
         )}
-      </div>
 
-      {/* Content */}
-      <div className="flex flex-col flex-1 p-4 gap-2">
-        {/* Name + Price */}
-        <div className="flex items-start justify-between gap-2">
-          <h3
-            className="text-lg leading-tight"
-            style={{ fontFamily: 'var(--font-lilita)', color: 'var(--brown)' }}
+        {quantity === 0 ? (
+          <button
+            id={`btn-add-${item.id}`}
+            type="button"
+            onClick={() => onAdd(item)}
+            aria-label={`Agregar ${item.name} al pedido`}
+            className={`absolute -bottom-2 -right-2 grid h-11 w-11 cursor-pointer place-items-center rounded-full border-2 border-[color:var(--brown)] bg-[var(--red)] text-white ${HARD_SHADOW} transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none`}
           >
-            {item.name}
-          </h3>
-          <span
-            className="text-base font-bold shrink-0"
-            style={{ color: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}
+            <PlusIcon />
+          </button>
+        ) : (
+          <div
+            className={`absolute -bottom-2 -right-2 flex h-11 items-center rounded-full border-2 border-[color:var(--brown)] bg-[var(--red)] text-white ${HARD_SHADOW}`}
           >
-            {formatPrice(item.price)}
-          </span>
-        </div>
-
-        {/* Description */}
-        <p
-          className="text-sm leading-relaxed flex-1"
-          style={{ color: 'var(--gray-text)', fontFamily: 'var(--font-montserrat)' }}
-        >
-          {item.description}
-        </p>
-
-        {/* CTA Button */}
-        <button
-          id={`btn-add-${item.id}`}
-          onClick={onAdd}
-          className="btn-pill mt-2 mx-4 mb-4 py-2.5 text-sm font-bold tracking-wide cursor-pointer"
-          style={{ fontFamily: 'var(--font-montserrat)' }}
-          aria-label={`Agregar ${item.name} al pedido`}
-        >
-          + Agregar al pedido
-        </button>
+            <button
+              type="button"
+              onClick={() => onRemove(item.id)}
+              aria-label={quantity === 1 ? `Quitar ${item.name} del pedido` : `Sacar una unidad de ${item.name}`}
+              className="grid h-full w-10 cursor-pointer place-items-center rounded-l-full transition-colors active:bg-[var(--brown)]/30"
+            >
+              <MinusIcon />
+            </button>
+            <span
+              aria-live="polite"
+              className="min-w-5 text-center text-lg leading-none"
+              style={{ fontFamily: 'var(--font-lilita)' }}
+            >
+              {quantity}
+            </span>
+            <button
+              type="button"
+              onClick={() => onAdd(item)}
+              aria-label={`Agregar otra unidad de ${item.name}`}
+              className="grid h-full w-10 cursor-pointer place-items-center rounded-r-full transition-colors active:bg-[var(--brown)]/30"
+            >
+              <PlusIcon />
+            </button>
+          </div>
+        )}
       </div>
-    </article>
+    </li>
   )
 }
 
 // ─── MenuSection (Client) ─────────────────────────────────────────────────────
 export default function MenuSection() {
   const [activeCategory, setActiveCategory] = useState<Category>('Hamburguesas')
-  const { addToCart } = useCart()
+  const { getQuantity, add, remove } = useMenuCart()
 
-  const filtered = MENU_ITEMS.filter((item) => item.category === activeCategory)
+  const groups = groupItems(MENU_ITEMS.filter((item) => item.category === activeCategory))
 
   return (
     <section
       id="menu"
-      className="py-14 px-4 md:px-10 lg:px-20"
+      // pb grande: deja lugar para la barra fija del pedido
+      className="px-4 pb-28 pt-8 md:px-10 md:pb-28 md:pt-14 lg:px-20"
       style={{ backgroundColor: 'var(--cream)' }}
       aria-labelledby="menu-heading"
     >
-      {/* Section header */}
-      <div className="flex flex-col items-center text-center mb-8 mt-2">
-        <p
-          className="text-sm uppercase tracking-widest font-semibold mb-2"
-          style={{ color: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}
-        >
-          Nuestro menú
-        </p>
+      <div className="mx-auto max-w-5xl">
         <h2
-          className="text-4xl md:text-5xl"
+          id="menu-heading"
+          className="mb-2 text-center text-3xl md:mb-6 md:text-5xl"
           style={{ fontFamily: 'var(--font-lilita)', color: '#1e1e1e' }}
         >
           ¡Vení a Lootear!
         </h2>
-        {/* Badge novedad bebidas */}
-        <div className="mt-4 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold" style={{ backgroundColor: 'var(--red)', color: '#fff', fontFamily: 'var(--font-montserrat)' }}>
-          <span>&#x1F379;</span>
-          <span>Ahora sumamos bebidas</span>
-        </div>
-      </div>
 
-      {/* Category Tabs */}
-      <div
-        className="flex flex-wrap justify-center gap-3 mb-10"
-        role="tablist"
-        aria-label="Filtrar por categoría"
-      >
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            id={`tab-${cat.toLowerCase()}`}
-            role="tab"
-            aria-selected={activeCategory === cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 cursor-pointer ${activeCategory === cat ? 'tab-active' : 'tab-inactive'
-              }`}
-            style={{ fontFamily: 'var(--font-montserrat)' }}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/*Subtítulo según categoría */}
-      {activeCategory === 'Hamburguesas' && (
-        <p
-          className="text-center text-sm text-neutral-600 -mt-6 mb-8"
-          style={{ fontFamily: 'var(--font-montserrat)' }}
-        >
-          <strong>No se adicionan papas fritas</strong>
-        </p>
-      )}
-      {activeCategory === 'Combos' && (
-        <p
-          className="text-center text-sm text-neutral-600 -mt-6 mb-8"
-          style={{ fontFamily: 'var(--font-montserrat)' }}
-        >
-          <strong>Todos los combos traen papas fritas</strong>
-        </p>
-      )}
-
-      {/* Grid */}
-      <div className="max-w-5xl mx-auto">
+        {/* Tabs sticky en una sola línea. Ajustá --header-h a la altura real de tu navbar. */}
         <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-          role="tabpanel"
-          aria-label={`Productos: ${activeCategory}`}
+          className="sticky z-20 -mx-4 px-4 py-2 md:mx-0 md:px-0"
+          style={{ top: 'var(--header-h, 64px)', backgroundColor: 'var(--cream)' }}
         >
-          {filtered.map((item) => (
-            <MenuCard
-              key={item.id}
-              item={item}
-              onAdd={() => addToCart(item)}
-            />
-          ))}
+          <div
+            role="tablist"
+            aria-label="Filtrar por categoría"
+            className="flex gap-2 overflow-x-auto p-1 md:justify-center [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {CATEGORIES.map((cat) => {
+              const active = activeCategory === cat
+              return (
+                <button
+                  key={cat}
+                  id={`tab-${cat.toLowerCase()}`}
+                  role="tab"
+                  aria-selected={active}
+                  aria-controls="menu-panel"
+                  onClick={() => setActiveCategory(cat)}
+                  className={`relative shrink-0 cursor-pointer whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold transition-colors duration-200 ${active ? 'tab-active' : 'tab-inactive'
+                    }`}
+                  style={{ fontFamily: 'var(--font-montserrat)' }}
+                >
+                  {cat}
+                  {/* Punto de novedad: las bebidas viven en Adicionales */}
+                  {cat === 'Adicionales' && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2"
+                      style={{ backgroundColor: 'var(--red)', borderColor: 'var(--cream)' }}
+                    />
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <p
+          className="mb-1 mt-2 text-center text-sm md:mb-4"
+          style={{ fontFamily: 'var(--font-montserrat)', color: 'var(--gray-text)' }}
+        >
+          {CATEGORY_NOTES[activeCategory]}
+        </p>
+
+        {/* Mobile: 1 columna de tarjetas. Desktop: tarjetas en 2 columnas. */}
+        <div id="menu-panel" role="tabpanel" aria-labelledby={`tab-${activeCategory.toLowerCase()}`}>
+          <ul className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-6">
+            {groups.map((variants, i) => (
+              <MenuRow
+                key={variants[0].group ?? variants[0].id}
+                variants={variants}
+                index={i}
+                getQuantity={getQuantity}
+                onAdd={add}
+                onRemove={remove}
+              />
+            ))}
+          </ul>
         </div>
       </div>
     </section>

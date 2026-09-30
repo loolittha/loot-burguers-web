@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useCart } from '@/context/CartContext'
+import { useCart, type CartItem } from '@/context/CartContext'
 import dynamic from 'next/dynamic'
 
 const DeliveryMap = dynamic(() => import('./DeliveryMapRadial'), {
@@ -18,7 +18,8 @@ export default function Carrito() {
     const [metodo, setMetodo] = useState<'envio' | 'retiro'>('envio')
     const [costoEnvio, setCostoEnvio] = useState<number | null>(null)
 
-    const { items, total, count, updateQuantity, isCartOpen, setIsCartOpen } = useCart()
+    const { items: rawItems, total, count, updateQuantity, isCartOpen, setIsCartOpen } = useCart()
+    const items = rawItems as CartItem[]
 
     // Cierra el panel si el carrito queda vacío
     useEffect(() => {
@@ -122,15 +123,25 @@ function CartPanel({
             `*Nombre:* ${nombre}`,
             ``,
             `*Productos:*`,
-            ...items.map(i => `• ${i.name} x${i.quantity} — $${(i.price * i.quantity).toLocaleString('es-AR')}`),
+            ...items.map(i => {
+                const item = i as CartItem
+                const papasNote =
+                    item.category === 'Combos'
+                        ? ' (con papas)'
+                        : item.category === 'Hamburguesas'
+                            ? ' (sin papas)'
+                            : ''
+                return `• ${item.name} x${item.quantity} — $${(item.price * item.quantity).toLocaleString('es-AR')}${papasNote}`
+            }),
             ``,
             `*Subtotal:* $${total.toLocaleString('es-AR')}`,
         ]
 
         if (metodo === 'envio') {
-            lines.push(`*Dirección:* ${direccion}`)
+            const mapsLink = `https://maps.google.com/?q=${encodeURIComponent(direccion)}`
             lines.push(`*Costo de envío:* $${costoEnvio?.toLocaleString('es-AR')}`)
             lines.push(`*Total con envío:* $${(total + (costoEnvio ?? 0)).toLocaleString('es-AR')}`)
+            lines.push(`*Dirección:* ${direccion} (${mapsLink})`)
         } else {
             lines.push(`*Modalidad:* Retiro en local`)
             lines.push(`*Total:* $${total.toLocaleString('es-AR')}`)
@@ -178,14 +189,14 @@ function CartPanel({
 
     return (
         <>
-            <div className="flex items-center justify-between p-6 border-b border-neutral-100">
+            <div className="shrink-0 flex items-center justify-between p-6 border-b border-neutral-100">
                 <h2 className="text-3xl tracking-wide" style={{ fontFamily: 'var(--font-lilita)', color: 'var(--red)' }}>Tu pedido</h2>
                 <button onClick={() => setIsCartOpen(false)} className="w-8 h-8 flex items-center justify-center bg-neutral-100 rounded-full text-neutral-600 hover:bg-neutral-200">
                     ✕
                 </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-8" style={{ fontFamily: 'var(--font-montserrat)' }}>
+            <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-8" style={{ fontFamily: 'var(--font-montserrat)' }}>
 
                 {/* Lista de productos */}
                 <div className="space-y-4">
@@ -305,7 +316,7 @@ function CartPanel({
             </div>
 
             {/* ─── RESUMEN Y TOTAL ─── */}
-            <div className="p-6 border-t border-neutral-200 bg-neutral-50 pb-8">
+            <div className="shrink-0 p-6 border-t border-neutral-200 bg-neutral-50 pb-8">
                 <div className="space-y-2 mb-5 text-sm font-medium" style={{ fontFamily: 'var(--font-montserrat)' }}>
                     <div className="flex justify-between text-neutral-600">
                         <span>Subtotal</span>
@@ -352,7 +363,7 @@ function CartPanel({
                         }`}
                     style={{ backgroundColor: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}
                 >
-                    ENVIAR PEDIDO POR WHATSAPP
+                    CONFIRMAR PEDIDO
                 </button>
             </div>
         </>
