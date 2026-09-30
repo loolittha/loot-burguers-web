@@ -40,9 +40,7 @@ function Hero() {
           >
             <span style={{ color: '#1E1E1E' }}>CADA BURGER,</span>
             <br />
-            <span style={{ color: 'var(--red)' }}>UN</span>
-            <br />
-            <span style={{ color: 'var(--red)' }}>TESORO.</span>
+            <span style={{ color: 'var(--red)' }}>UN TESORO.</span>
           </h1>
 
           {/*Descripción*/}
@@ -53,8 +51,11 @@ function Hero() {
               color: '#3D3D3D',
             }}
           >
-            Smash burgers hechas al momento,con salsas que no vas
-            a encontrar en otro lado.<strong> Una mordida y entendés por qué...</strong>
+            Smash burgers hechas al momento,
+            <br />
+            con salsas que no vas a encontrar en otro lado.
+
+            <strong> Una mordida y entendés por qué...</strong>
           </p>
 
           {/*CTA*/}

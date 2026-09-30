@@ -110,7 +110,7 @@ export default function BurgerCarousel() {
           className="text-xs uppercase tracking-[0.25em] font-semibold mb-1"
           style={{ color: 'rgba(245,230,211,0.7)', fontFamily: 'var(--font-montserrat)' }}
         >
-          Sabor artesanal
+          Smash de verdad
         </p>
         <h2
           className="text-4xl md:text-5xl"
