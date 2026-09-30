@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
-import { Lilita_One, Montserrat } from 'next/font/google'
+import { Titan_One, Montserrat } from 'next/font/google'
 import './globals.css'
 import WhatsAppFloat from '@/components/WhatsAppFloat'
 import { CartProvider } from '@/context/CartContext' // <-- 1. Importamos el contexto
 
 // Fuentes
-const lilitaOne = Lilita_One({
+const titanOne = Titan_One({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-lilita',
@@ -41,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${lilitaOne.variable} ${montserrat.variable}`}
+      className={`${titanOne.variable} ${montserrat.variable}`}
     >
       <body className="min-h-screen antialiased">
         {/* 2. Envolvemos la app con el CartProvider */}
