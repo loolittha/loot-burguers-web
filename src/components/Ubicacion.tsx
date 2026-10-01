@@ -1,6 +1,5 @@
 'use client'
-//Panel de Zonas de entregas
-import Image from 'next/image'
+// Panel de Ubicación interactivo
 
 export default function Ubicacion() {
     return (
@@ -29,7 +28,7 @@ export default function Ubicacion() {
                     className="text-4xl sm:text-5xl md:text-6xl tracking-tight mb-3"
                     style={{ fontFamily: 'var(--font-lilita)', color: 'var(--cream)' }}
                 >
-                    ZONAS DE ENTREGA
+                    DÓNDE ESTAMOS
                 </h2>
 
                 {/* Párrafo descriptivo en crema */}
@@ -37,35 +36,59 @@ export default function Ubicacion() {
                     className="text-sm sm:text-base max-w-md mb-8 leading-relaxed opacity-90"
                     style={{ fontFamily: 'var(--font-montserrat)', color: 'var(--cream)' }}
                 >
-                    Repartimos en las zonas marcadas en el mapa. Al momento de <strong>confirmar tu pedido</strong> vas a poder indicar tu punto exacto.
+                    Pasá a buscar tu pedido o te lo llevamos con nuestro delivery.
                 </p>
 
-                {/* Mapa con borde sutil en crema */}
+                {/* Mapa Interactivo de Google (iframe) */}
                 <div
-                    className="relative w-full max-w-md aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border-2 bg-neutral-100"
+                    className="relative w-full max-w-md aspect-[4/5] sm:aspect-video rounded-2xl overflow-hidden shadow-2xl border-2 bg-neutral-100"
                     style={{ borderColor: 'rgba(253, 248, 240, 0.25)' }}
                 >
-                    <Image
-                        src="/mapa/MapaCalor.jpg"
-                        alt="Zonas de entrega Loot Burgers"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 90vw, 450px"
+                    <iframe
+                        src="https://maps.google.com/maps?q=ENA%2C%20Chubut%201353%2C%20B1631%20Villa%20Rosa%2C%20Buenos%20Aires&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                        width="100%"
+                        height="100%"
+                        style={{ border: 0 }}
+                        allowFullScreen={false}
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        title="Ubicación de Loot Burgers en Villa Rosa"
                     />
                 </div>
 
-                {/* Botón Píldora invertido (Fondo crema, texto rojo) */}
-                <a
-                    href="#menu"
-                    className="mt-8 inline-flex items-center gap-2.5 px-6 py-3 rounded-full font-black text-xs tracking-wider transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
-                    style={{
-                        backgroundColor: 'var(--cream)',
-                        color: 'var(--red)',
-                        fontFamily: 'var(--font-montserrat)',
-                    }}
-                >
-                    <span>VER EL MENÚ Y PEDIR</span>
-                </a>
+                {/* Botones de acción */}
+                <div className="flex flex-col sm:flex-row gap-4 mt-8 w-full max-w-md justify-center">
+                    <a
+                        href="https://maps.google.com/maps?q=ENA%2C%20Chubut%201353%2C%20B1631%20Villa%20Rosa%2C%20Buenos%20Aires"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-full font-black text-xs tracking-wider transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg w-full sm:w-auto"
+                        style={{
+                            backgroundColor: 'transparent',
+                            color: 'var(--cream)',
+                            border: '2px solid var(--cream)',
+                            fontFamily: 'var(--font-montserrat)',
+                        }}
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span>CÓMO LLEGAR</span>
+                    </a>
+
+                    <a
+                        href="#menu"
+                        className="inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-full font-black text-xs tracking-wider transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg w-full sm:w-auto"
+                        style={{
+                            backgroundColor: 'var(--cream)',
+                            color: 'var(--red)',
+                            fontFamily: 'var(--font-montserrat)',
+                        }}
+                    >
+                        <span>VER MENÚ</span>
+                    </a>
+                </div>
             </div>
         </section>
     )

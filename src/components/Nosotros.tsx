@@ -1,8 +1,4 @@
 ﻿'use client'
-//Panel de Nosotros
-import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
-
 
 export default function NosotrosSection() {
     const whatsappMessage = encodeURIComponent(
@@ -10,138 +6,93 @@ export default function NosotrosSection() {
     )
     const whatsappUrl = `https://wa.me/5491178220054?text=${whatsappMessage}`
 
-    const sectionRef = useRef<HTMLElement>(null)
-    const [waveProgress, setWaveProgress] = useState(0)
-
-    useEffect(() => {
-        const section = sectionRef.current
-        if (!section) return
-
-        const onScroll = () => {
-            const rect = section.getBoundingClientRect()
-            const windowH = window.innerHeight
-            const start = windowH * 0.9
-            const end = windowH * 0.15
-            const raw = 1 - (rect.top - end) / (start - end)
-            setWaveProgress(Math.min(1, Math.max(0, raw)))
-        }
-
-        window.addEventListener('scroll', onScroll, { passive: true })
-        onScroll()
-        return () => window.removeEventListener('scroll', onScroll)
-    }, [])
-
-    // Panel crema entra desde abajo: empieza en translateY(+100%) y va a 0%
-    const panelTranslateY = (1 - waveProgress) * 100
-
     return (
         <section
             id="nosotros"
-            ref={sectionRef}
-            className="relative overflow-hidden"
-            style={{ backgroundColor: 'var(--red)', minHeight: '560px' }}
+            className="relative flex items-center justify-center overflow-hidden min-h-[85vh]"
             aria-labelledby="nosotros-title"
         >
+            {/* 1. Fondo de Video */}
+            <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                src="/videos/Evento.mp4"
+                className="absolute inset-0 w-full h-full object-cover z-0"
+                aria-hidden="true"
+            />
 
-            {/* ── Panel crema con ola — entra desde abajo al scrollear ── */}
-            <div
-                className="absolute inset-x-0 bottom-0 z-10 pointer-events-none"
-                style={{
-                    height: '55%',
-                    transform: `translateY(${panelTranslateY}%)`,
-                    willChange: 'transform',
-                }}
-            >
+            {/* 2. Filtro oscuro con desenfoque sutil (Glassmorphism) */}
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] z-10" />
 
-                <svg
-                    viewBox="0 0 1440 90"
-                    preserveAspectRatio="none"
-                    className="w-full"
-                    style={{ display: 'block', height: '90px' }}
-                    aria-hidden="true"
-                >
-                    <path
-                        d="M0,55 C200,90 420,10 720,50 C1020,88 1260,15 1440,45 L1440,90 L0,90 Z"
-                        fill="var(--cream)"
-                    />
+            {/* 3. Ola superior (Transición suave desde arriba) */}
+            <div className="absolute top-0 inset-x-0 z-20">
+                <svg viewBox="0 0 1440 90" preserveAspectRatio="none" className="w-full h-10 md:h-16 block" aria-hidden="true">
+                    <path d="M0,0 L1440,0 L1440,45 C1260,15 1020,88 720,50 C420,10 200,90 0,55 Z" fill="var(--cream)" />
                 </svg>
-                <div style={{ backgroundColor: 'var(--cream)', height: 'calc(100% - 89px)', width: '100%' }} />
             </div>
 
-            {/* ── Contenido principal ── */}
-            <div className="relative z-20 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-28 items-center px-6 md:px-12 lg:px-20 py-16 md:py-24">
+            {/* 4. Ola inferior (Transición suave hacia abajo) */}
+            <div className="absolute bottom-0 inset-x-0 z-20 transform rotate-180">
+                <svg viewBox="0 0 1440 90" preserveAspectRatio="none" className="w-full h-10 md:h-16 block" aria-hidden="true">
+                    <path d="M0,0 L1440,0 L1440,45 C1260,15 1020,88 720,50 C420,10 200,90 0,55 Z" fill="var(--cream)" />
+                </svg>
+            </div>
 
-                {/* Columna Izquierda: Fotos y Video */}
-                <div className="flex items-center justify-center gap-3 sm:gap-8 py-4 w-full">
-                    <div className="relative w-36 sm:w-64 h-52 sm:h-96 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl transform -rotate-4 hover:-rotate-2 transition-all duration-300 shrink-0 -translate-y-2 sm:-translate-y-4">
-                        <Image
-                            src="/PanelNosotros.jpg"
-                            alt="Smash burger artesanal recién salida de la plancha"
-                            fill
-                            sizes="(max-width: 640px) 150px, 260px"
-                            className="object-cover"
-                        />
-                    </div>
-                    <div className="relative w-40 sm:w-72 h-56 sm:h-[420px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl sm:shadow-2xl transform rotate-4 hover:rotate-2 transition-all duration-300 shrink-0 translate-y-2 sm:translate-y-4 bg-black/5">
-                        <video
-                            autoPlay loop muted playsInline preload="auto"
-                            src="/videos/PanelNosotrosHamburguesa.mp4"
-                            className="w-full h-full object-cover"
-                            aria-hidden="true"
-                        >
-                            <source src="/videos/PanelNosotrosHamburguesa.mp4" type="video/mp4" />
-                        </video>
-                    </div>
+            {/* 5. Contenido centrado */}
+            <div className="relative z-30 max-w-4xl mx-auto px-6 py-24 text-center flex flex-col items-center">
+
+                {/* Antetítulo para enmarcar */}
+                <span
+                    className="mb-4 text-sm md:text-base font-bold tracking-[0.2em] uppercase"
+                    style={{ color: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}
+                >
+                    CONOCENOS
+                </span>
+
+                <h2
+                    id="nosotros-title"
+                    className="text-5xl sm:text-6xl md:text-7xl leading-[0.95] mb-6 tracking-tight drop-shadow-2xl"
+                    style={{ fontFamily: 'var(--font-lilita)', color: '#F5E6D3' }}
+                >
+                    LOOT<br />BURGERS
+                </h2>
+
+                <div
+                    className="space-y-4 text-base sm:text-lg leading-relaxed max-w-2xl mb-10 text-white/95 drop-shadow-md"
+                    style={{ fontFamily: 'var(--font-montserrat)', color: '#F5E6D3' }}
+                >
+                    <p>
+                        Un concepto que nace de nuestra pasión por lo auténtico.
+                        Un producto sin vueltas, creado para disfrutar y compartir.
+                    </p>
+                    <p>
+                        Con smash burgers hechas a la perfección y sabores simples,
+                        diseñadas para acompañarte en cada juntada y en cada antojo.
+                    </p>
+                    <br />
+                    <p
+                        className="pt-4 font-bold text-lg"
+                        style={{ color: 'var(--cream)' }}
+                    >
+                        ¿Tenés un evento especial?
+                    </p>
+                    <p>
+                        Llevamos nuestra plancha y toda la experiencia Loot para conectar con tus invitados.
+                    </p>
                 </div>
 
-                {/* Columna Derecha: Textos y Botón */}
-                <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
-                    <h2
-                        id="nosotros-title"
-                        className="text-5xl sm:text-6xl md:text-7xl leading-[0.95] mb-6 tracking-tight"
-                        style={{
-                            fontFamily: 'var(--font-lilita)',
-                            color: 'var(--cream)',
-                            textShadow: '3px 3px 0px rgba(120,0,0,0.35), -1px -1px 0px rgba(120,0,0,0.2)',
-                        }}
-                    >
-                        LLEVÁ LOOT A<br />TU FIESTA
-                    </h2>
-
-                    <div
-                        className="space-y-4 text-base sm:text-lg leading-relaxed max-w-lg mb-8"
-                        style={{ fontFamily: 'var(--font-montserrat)', color: '#3D3D3D' }}
-                    >
-                        <p>
-                            Somos fanáticos del sabor simple pero bien hecho. En Loot nos enfocamos
-                            en el detalle: carne seleccionada y recetas secretas que marcan la diferencia.
-                        </p>
-                        <p>
-                            <strong>¿Tenés un cumpleaños o juntada?</strong> Llevamos todo nuestro equipamiento
-                            para cocinar smash burgers en vivo para vos y tus invitados.
-                        </p>
-                    </div>
-
-                    <a
-                        href={whatsappUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group relative inline-flex items-center gap-2.5 pl-5 pr-2 py-1.5 rounded-full text-white font-extrabold text-xs tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer shadow-lg hover:shadow-xl"
-                        style={{ backgroundColor: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}
-                    >
-                        <span>COTIZÁ TU EVENTO</span>
-                        <span
-                            className="w-7 h-7 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:rotate-45"
-                            style={{ backgroundColor: 'var(--cream)', color: 'var(--red)' }}
-                        >
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <line x1="7" y1="17" x2="17" y2="7" />
-                                <polyline points="7 7 17 7 17 17" />
-                            </svg>
-                        </span>
-                    </a>
-                </div>
-
+                <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-8 py-3.5 rounded-full text-white font-extrabold text-sm tracking-wider transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+                    style={{ backgroundColor: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}
+                >
+                    COTIZÁ TU EVENTO
+                </a>
             </div>
         </section>
     )

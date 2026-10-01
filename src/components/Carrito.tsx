@@ -37,22 +37,38 @@ export default function Carrito() {
     return (
         <>
             {/* BARRA FLOTANTE INFERIOR */}
-            <div className={`fixed bottom-0 left-0 w-full bg-white border-t border-neutral-200 shadow-[0_-10px_30px_rgba(0,0,0,0.08)] z-40 px-6 py-4 flex justify-between items-center sm:px-10 ${isCartOpen ? 'hidden' : ''}`}>
-                <div className="flex flex-col">
-                    <span className="text-2xl sm:text-3xl leading-none tracking-wide" style={{ fontFamily: 'var(--font-lilita)', color: 'var(--red)' }}>
-                        $ {total.toLocaleString('es-AR')}
-                    </span>
-                    <span className="text-xs sm:text-sm text-neutral-500 font-medium mt-1" style={{ fontFamily: 'var(--font-montserrat)' }}>
-                        {count} {count === 1 ? 'producto' : 'productos'}
-                    </span>
+            {/* BARRA FLOTANTE INFERIOR */}
+            <div
+                className={`animate-slide-up fixed inset-x-0 bottom-0 z-40 border-t-2 border-[color:var(--brown)] px-4 pt-3 sm:px-10 ${isCartOpen ? 'hidden' : ''}`}
+                style={{
+                    backgroundColor: 'var(--cream)',
+                    paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))',
+                }}
+            >
+                <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
+                    <div className="flex flex-col" aria-live="polite">
+                        <span
+                            className="text-2xl leading-none tracking-wide sm:text-3xl"
+                            style={{ fontFamily: 'var(--font-lilita)', color: 'var(--red)' }}
+                        >
+                            $ {total.toLocaleString('es-AR')}
+                        </span>
+                        <span
+                            className="mt-1 text-xs font-medium sm:text-sm"
+                            style={{ fontFamily: 'var(--font-montserrat)', color: 'var(--gray-text)' }}
+                        >
+                            {count} {count === 1 ? 'producto' : 'productos'} · envío aparte
+                        </span>
+                    </div>
+
+                    <button
+                        onClick={() => setIsCartOpen(true)}
+                        className="cursor-pointer rounded-full border-2 border-[color:var(--brown)] bg-[var(--red)] px-6 py-3 text-sm font-black tracking-widest text-white shadow-[3px_3px_0_var(--brown)] transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none sm:px-8 sm:py-3.5"
+                        style={{ fontFamily: 'var(--font-montserrat)' }}
+                    >
+                        VER MI PEDIDO
+                    </button>
                 </div>
-                <button
-                    onClick={() => setIsCartOpen(true)}
-                    className="px-6 py-3 sm:px-8 sm:py-3.5 rounded-full font-black text-sm tracking-widest text-white transition-transform active:scale-95 shadow-md"
-                    style={{ backgroundColor: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}
-                >
-                    VER MI PEDIDO
-                </button>
             </div>
 
             {/* MODAL LATERAL  */}
@@ -259,7 +275,7 @@ function CartPanel({
                             className="w-full px-4 py-3 rounded-xl border border-neutral-300 focus:border-[var(--red)] outline-none text-sm bg-white"
                         />
                         <div className="mt-4 rounded-xl bg-cream px-4 py-3 text-sm text-neutral-600 border border-neutral-200">
-                            📍 <span className="font-bold text-neutral-800">Loot Burguers</span><br />
+                            <span className="font-bold text-neutral-800">Loot Burguers</span><br />
                             <span className="text-xs">ENA, Chubut 1353, B1631 Villa Rosa, Buenos Aires</span>
                         </div>
                     </div>

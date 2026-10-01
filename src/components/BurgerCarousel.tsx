@@ -202,7 +202,6 @@ export default function BurgerCarousel() {
                   backgroundColor: '#C1121F',
                   color: '#F5E6D3',
                   fontFamily: 'var(--font-montserrat)',
-                  boxShadow: '0 4px 16px rgba(193,18,31,0.5)',
                 }}
               >
                 Ver en el menú →

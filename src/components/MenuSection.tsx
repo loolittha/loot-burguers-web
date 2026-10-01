@@ -435,7 +435,7 @@ export default function MenuSection() {
     <section
       id="menu"
       // pb grande: deja lugar para la barra fija del pedido
-      className="px-4 pb-28 pt-8 md:px-10 md:pb-28 md:pt-14 lg:px-20"
+      className="px-4 pr-6 pb-28 pt-8 md:px-10 md:pb-28 md:pt-14 lg:px-20"
       style={{ backgroundColor: 'var(--cream)' }}
       aria-labelledby="menu-heading"
     >
@@ -450,13 +450,13 @@ export default function MenuSection() {
 
         {/* Tabs sticky en una sola línea. Ajustá --header-h a la altura real de tu navbar. */}
         <div
-          className="sticky z-20 -mx-4 px-4 py-2 md:mx-0 md:px-0"
+          className="sticky z-20 -mx-4 -mr-6 px-4 py-2 md:mx-0 md:mr-0 md:px-0"
           style={{ top: 'var(--header-h, 64px)', backgroundColor: 'var(--cream)' }}
         >
           <div
             role="tablist"
             aria-label="Filtrar por categoría"
-            className="flex gap-2 overflow-x-auto p-1 md:justify-center [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex justify-center gap-2 p-1"
           >
             {CATEGORIES.map((cat) => {
               const active = activeCategory === cat
@@ -468,7 +468,7 @@ export default function MenuSection() {
                   aria-selected={active}
                   aria-controls="menu-panel"
                   onClick={() => setActiveCategory(cat)}
-                  className={`relative shrink-0 cursor-pointer whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold transition-colors duration-200 ${active ? 'tab-active' : 'tab-inactive'
+                  className={`relative flex-1 md:flex-none cursor-pointer whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold transition-colors duration-200 ${active ? 'tab-active' : 'tab-inactive'
                     }`}
                   style={{ fontFamily: 'var(--font-montserrat)' }}
                 >
