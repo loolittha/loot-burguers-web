@@ -1,5 +1,4 @@
 'use client'
-// Panel de Ubicación interactivo
 
 export default function Ubicacion() {
     return (
@@ -9,12 +8,12 @@ export default function Ubicacion() {
             style={{ backgroundColor: 'var(--cream)' }}
             aria-labelledby="ubicacion-title"
         >
-            {/* Tarjeta Roja */}
+
             <div
                 className="max-w-3xl mx-auto rounded-[32px] p-6 sm:p-10 md:p-12 shadow-2xl flex flex-col items-center text-center transition-all duration-300"
                 style={{ backgroundColor: 'var(--red)' }}
             >
-                {/* Subtítulo / Tagline en crema */}
+
                 <span
                     className="text-xs font-black tracking-widest uppercase mb-2 opacity-80"
                     style={{ color: 'var(--cream)', fontFamily: 'var(--font-montserrat)' }}
@@ -22,7 +21,7 @@ export default function Ubicacion() {
                     Cobertura en Pilar
                 </span>
 
-                {/* Título en crema */}
+
                 <h2
                     id="ubicacion-title"
                     className="text-4xl sm:text-5xl md:text-6xl tracking-tight mb-3"
@@ -31,7 +30,6 @@ export default function Ubicacion() {
                     DÓNDE ESTAMOS
                 </h2>
 
-                {/* Párrafo descriptivo en crema */}
                 <p
                     className="text-sm sm:text-base max-w-md mb-8 leading-relaxed opacity-90"
                     style={{ fontFamily: 'var(--font-montserrat)', color: 'var(--cream)' }}
@@ -39,7 +37,7 @@ export default function Ubicacion() {
                     Pasá a buscar tu pedido o te lo llevamos con nuestro delivery.
                 </p>
 
-                {/* Mapa Interactivo de Google (iframe) */}
+
                 <div
                     className="relative w-full max-w-md aspect-[4/5] sm:aspect-video rounded-2xl overflow-hidden shadow-2xl border-2 bg-neutral-100"
                     style={{ borderColor: 'rgba(253, 248, 240, 0.25)' }}
@@ -56,7 +54,6 @@ export default function Ubicacion() {
                     />
                 </div>
 
-                {/* Botones de acción */}
                 <div className="flex flex-col sm:flex-row gap-4 mt-8 w-full max-w-md justify-center">
                     <a
                         href="https://maps.google.com/maps?q=ENA%2C%20Chubut%201353%2C%20B1631%20Villa%20Rosa%2C%20Buenos%20Aires"

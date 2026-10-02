@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-// ─── Data ──────────────────────────────────────────────────────────────────────
+//Cards
 const BURGERS = [
   {
     id: 'cheese',
@@ -33,25 +33,21 @@ const BURGERS = [
 ]
 
 const TOTAL = BURGERS.length
-const ANIM_MS = 280   // duración del cross-fade
-const AUTO_MS = 5000  // intervalo auto-play
+const ANIM_MS = 280
+const AUTO_MS = 5000
 
-// ─── BurgerCarousel ────────────────────────────────────────────────────────────
+//Carrousel
 export default function BurgerCarousel() {
   const [current, setCurrent] = useState(0)
   const [fading, setFading] = useState(false)
 
-  // Ref para guardia — no dispara re-renders
   const animatingRef = useRef(false)
-  // Ref para siempre tener el valor actual en el closure del timer
   const currentRef = useRef(current)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const touchStartX = useRef<number | null>(null)
 
-  // Sincronizar ref con state
   useEffect(() => { currentRef.current = current }, [current])
 
-  // ── navigate ─────────────────────────────────────────────────────────────────
   const navigate = (index: number) => {
     if (animatingRef.current || index === currentRef.current) return
     animatingRef.current = true
@@ -66,7 +62,7 @@ export default function BurgerCarousel() {
   const goNext = () => navigate((currentRef.current + 1) % TOTAL)
   const goPrev = () => navigate((currentRef.current - 1 + TOTAL) % TOTAL)
 
-  // ── Auto-play estable ────────────────────────────────────────────────────────
+  //Auto-play
   const startTimer = () => {
     if (timerRef.current) clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
@@ -77,9 +73,8 @@ export default function BurgerCarousel() {
   useEffect(() => {
     startTimer()
     return () => { if (timerRef.current) clearTimeout(timerRef.current) }
-  }, [current]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [current])
 
-  // ── Swipe ────────────────────────────────────────────────────────────────────
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX
   }
@@ -104,7 +99,6 @@ export default function BurgerCarousel() {
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      {/* ── Título sección ─────────────────────────────────────────────────── */}
       <div className="pt-10 pb-6 text-center px-4">
         <p
           className="text-xs uppercase tracking-[0.25em] font-semibold mb-1"
@@ -120,12 +114,10 @@ export default function BurgerCarousel() {
         </h2>
       </div>
 
-      {/* ── Slide ─────────────────────────────────────────────────────────── */}
       <div
         className="relative flex flex-col md:flex-row items-stretch mx-4 md:mx-12 lg:mx-24 rounded-3xl overflow-hidden"
         style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.4)', minHeight: '360px' }}
       >
-        {/* ── Imágenes pre-renderizadas ── */}
         <div
           className="relative w-full md:w-[55%] flex-none"
           style={{ minHeight: '280px', height: 'clamp(280px, 50vw, 520px)' }}
@@ -148,17 +140,14 @@ export default function BurgerCarousel() {
             />
           ))}
 
-          {/* Gradientes sobre las imágenes */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/40 hidden md:block z-10 pointer-events-none" />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50 md:hidden z-10 pointer-events-none" />
         </div>
 
-        {/* ── Panel de texto ── */}
         <div
           className="flex-1 flex flex-col justify-center px-8 py-8 md:py-10 md:pl-10 md:pr-8"
           style={{ backgroundColor: '#1a0508' }}
         >
-          {/* Cross-fade del texto */}
           <div
             style={{
               opacity: fading ? 0 : 1,
@@ -211,7 +200,7 @@ export default function BurgerCarousel() {
         </div>
       </div>
 
-      {/* ── Controles ──────────────────────────────────────────────────────── */}
+      {/*Controles*/}
       <div className="flex items-center justify-center gap-6 py-7">
 
         <button

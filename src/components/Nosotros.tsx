@@ -12,7 +12,6 @@ export default function NosotrosSection() {
             className="relative flex items-center justify-center overflow-hidden min-h-[85vh]"
             aria-labelledby="nosotros-title"
         >
-            {/* 1. Fondo de Video */}
             <video
                 autoPlay
                 loop
@@ -24,27 +23,22 @@ export default function NosotrosSection() {
                 aria-hidden="true"
             />
 
-            {/* 2. Filtro oscuro con desenfoque sutil (Glassmorphism) */}
             <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] z-10" />
 
-            {/* 3. Ola superior (Transición suave desde arriba) */}
             <div className="absolute top-0 inset-x-0 z-20">
                 <svg viewBox="0 0 1440 90" preserveAspectRatio="none" className="w-full h-10 md:h-16 block" aria-hidden="true">
                     <path d="M0,0 L1440,0 L1440,45 C1260,15 1020,88 720,50 C420,10 200,90 0,55 Z" fill="var(--cream)" />
                 </svg>
             </div>
 
-            {/* 4. Ola inferior (Transición suave hacia abajo) */}
             <div className="absolute bottom-0 inset-x-0 z-20 transform rotate-180">
                 <svg viewBox="0 0 1440 90" preserveAspectRatio="none" className="w-full h-10 md:h-16 block" aria-hidden="true">
                     <path d="M0,0 L1440,0 L1440,45 C1260,15 1020,88 720,50 C420,10 200,90 0,55 Z" fill="var(--cream)" />
                 </svg>
             </div>
 
-            {/* 5. Contenido centrado */}
             <div className="relative z-30 max-w-4xl mx-auto px-6 py-24 text-center flex flex-col items-center">
 
-                {/* Antetítulo para enmarcar */}
                 <span
                     className="mb-4 text-sm md:text-base font-bold tracking-[0.2em] uppercase"
                     style={{ color: 'var(--red)', fontFamily: 'var(--font-montserrat)' }}

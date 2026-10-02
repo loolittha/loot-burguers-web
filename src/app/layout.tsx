@@ -32,7 +32,6 @@ export const viewport = {
   maximumScale: 5,
 }
 
-// Layout
 export default function RootLayout({
   children,
 }: {
@@ -44,7 +43,6 @@ export default function RootLayout({
       className={`${titanOne.variable} ${montserrat.variable}`}
     >
       <body className="min-h-screen antialiased">
-        {/* 2. Envolvemos la app con el CartProvider */}
         <CartProvider>
           {children}
           <WhatsAppFloat />

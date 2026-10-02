@@ -17,7 +17,6 @@ export default function Navbar() {
 
   const close = () => setIsOpen(false)
 
-  // Sombra sutil al hacer scroll
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -38,12 +37,10 @@ export default function Navbar() {
         `}
         style={{ backgroundColor: 'var(--cream)' }}
       >
-        {/* ── Logo izquierda ── */}
         <Link
           href="/"
           onClick={(e) => {
             close?.()
-            // Si estoy en la home, hacemos scroll y borramos "#menu"
             if (window.location.pathname === '/' || window.location.pathname === '') {
               e.preventDefault()
               window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -63,7 +60,6 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* ── Links desktop — centro/derecha ── */}
         <nav aria-label="Navegación principal" className="hidden md:flex absolute inset-0 items-center justify-center pointer-events-none">
           <ul className="flex items-center gap-10 pointer-events-auto" role="list">
             {NAV_LINKS.map(({ href, label }) => (
@@ -89,7 +85,6 @@ export default function Navbar() {
           </ul>
         </nav>
 
-        {/* ── Botón hamburguesa celular ── */}
         <button
           id="mobile-menu-btn"
           className="md:hidden p-2 rounded-lg z-[60]"
@@ -113,26 +108,23 @@ export default function Navbar() {
         </button>
       </header>
 
-      {/* ── Menú móvil desplegable ── */}
+      {/*Menú móvil desplegable*/}
       <div
         className={`md:hidden fixed inset-0 z-50 transition-all duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
         aria-hidden={!isOpen}
       >
-        {/* Overlay */}
         <div
           className="absolute inset-0 bg-black/40 backdrop-blur-sm"
           onClick={close}
         />
 
-        {/* Panel crema con links rojos */}
         <nav
           className={`absolute top-0 left-0 right-0 shadow-xl transition-transform duration-300 ${isOpen ? 'translate-y-0' : '-translate-y-full'
             }`}
           style={{ backgroundColor: 'var(--cream)' }}
           aria-label="Menú móvil"
         >
-          {/* Barra superior con botón X */}
           <div className="h-16 flex items-center justify-end px-6">
             <button
               onClick={close}

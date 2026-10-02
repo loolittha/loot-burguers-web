@@ -5,7 +5,6 @@ import { useCart, type CartItem } from '@/context/CartContext'
 import dynamic from 'next/dynamic'
 
 const DeliveryMap = dynamic(() => import('./DeliveryMapRadial'), {
-    // const DeliveryMap = dynamic(() => import('./DeliveryMap'), {
     ssr: false,
     loading: () => (
         <div className="w-full rounded-xl bg-neutral-100 flex items-center justify-center" style={{ height: '220px' }}>
@@ -21,7 +20,6 @@ export default function Carrito() {
     const { items: rawItems, total, count, updateQuantity, isCartOpen, setIsCartOpen } = useCart()
     const items = rawItems as CartItem[]
 
-    // Cierra el panel si el carrito queda vacío
     useEffect(() => {
         if (count === 0) setIsCartOpen(false)
     }, [count, setIsCartOpen])
@@ -36,8 +34,6 @@ export default function Carrito() {
 
     return (
         <>
-            {/* BARRA FLOTANTE INFERIOR */}
-            {/* BARRA FLOTANTE INFERIOR */}
             <div
                 className={`animate-slide-up fixed inset-x-0 bottom-0 z-40 border-t-2 border-[color:var(--brown)] px-4 pt-3 sm:px-10 ${isCartOpen ? 'hidden' : ''}`}
                 style={{
@@ -93,7 +89,7 @@ export default function Carrito() {
     )
 }
 
-//  Sub componente con estado de formulario
+// Sub componente con estado de formulario
 function CartPanel({
     metodo, setMetodo, items, total, costoEnvio, setCostoEnvio, totalFinal, updateQuantity, setIsCartOpen
 }: {
@@ -113,7 +109,7 @@ function CartPanel({
     const [outOfRange, setOutOfRange] = useState(false)
     const [metodoPago, setMetodoPago] = useState<'efectivo' | 'transferencia'>('efectivo')
 
-    // Resetear dirección al cambiar de método
+    //Resetear dirección al cambiar de método
     const handleMetodo = (m: 'envio' | 'retiro') => {
         setMetodo(m)
         setDireccion('')
@@ -198,7 +194,7 @@ function CartPanel({
             body: JSON.stringify(pedidoData),
         }).catch(err => console.error('Error al guardar en Excel:', err))
 
-        // 4. Redirección inmediata a WhatsApp (mismo gesto del usuario no se bloquea el popup)
+        // 4. Redirección a WhatsApp
         const msg = buildWhatsAppMessage()
         window.open(`https://api.whatsapp.com/send?phone=5491178220054&text=${encodeURIComponent(msg)}`, '_blank')
     }
@@ -231,7 +227,7 @@ function CartPanel({
                     ))}
                 </div>
 
-                {/* Selector Envío / Retiro */}
+                {/* Selector Envío/Retiro */}
                 <div>
                     <p className="font-bold text-sm mb-3 text-neutral-900">¿Cómo lo recibís?</p>
                     <div className="grid grid-cols-2 gap-3">
@@ -240,7 +236,7 @@ function CartPanel({
                     </div>
                 </div>
 
-                {/* ─── SECCIÓN ENVÍO ─── */}
+                {/*SECCIÓN ENVÍO*/}
                 {metodo === 'envio' && (
                     <div className="space-y-5 animate-fade-in">
                         {/* Nombre */}
@@ -263,7 +259,7 @@ function CartPanel({
                     </div>
                 )}
 
-                {/* ─── SECCIÓN RETIRO ─── */}
+                {/*SECCIÓN RETIRO*/}
                 {metodo === 'retiro' && (
                     <div>
                         <label className="block text-xs font-bold text-neutral-800 mb-1.5 uppercase">Tu nombre</label>
@@ -331,7 +327,7 @@ function CartPanel({
                 </div>
             </div>
 
-            {/* ─── RESUMEN Y TOTAL ─── */}
+            {/* RESUMEN Y TOTAL */}
             <div className="shrink-0 p-6 border-t border-neutral-200 bg-neutral-50 pb-8">
                 <div className="space-y-2 mb-5 text-sm font-medium" style={{ fontFamily: 'var(--font-montserrat)' }}>
                     <div className="flex justify-between text-neutral-600">

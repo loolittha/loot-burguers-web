@@ -20,7 +20,7 @@ function CheckerStrip() {
   )
 }
 
-// Hero — dos columnas sobre fondo crema
+// Hero
 function Hero() {
   return (
     <section
@@ -32,7 +32,6 @@ function Hero() {
 
         {/* ── Título de la web ── */}
         <div>
-          {/*Título principal*/}
           <h1
             className="text-6xl sm:text-7xl md:text-8xl leading-[0.95] mb-6"
             style={{ fontFamily: 'var(--font-lilita)' }}
@@ -57,7 +56,7 @@ function Hero() {
             <strong> Una mordida y entendés por qué...</strong>
           </p>
 
-          {/*CTA*/}
+          {/*Botón*/}
           <a
             href="#menu"
             id="hero-cta-btn"
@@ -82,9 +81,7 @@ function Hero() {
           </a>
         </div>
 
-        {/*Columna derecha: video con Lootsito superpuesto */}
         <div className="relative w-full">
-          {/*Marco que recorta el video */}
           <div
             className="rounded-3xl overflow-hidden w-full"
             style={{ aspectRatio: '4/3' }}
@@ -118,7 +115,7 @@ function Hero() {
   )
 }
 
-// ── Footer ───────────────────────────────────────────────────────────────────
+//Footer 
 function Footer() {
   return (
     <footer id="contacto" className="relative z-30 w-full" style={{ backgroundColor: 'var(--red)' }}>
@@ -164,7 +161,6 @@ function Footer() {
             </a>
           </div>
 
-          {/* Columna Centro: Logo sobresaliente hacia arriba */}
           <div className="flex flex-col items-center justify-center order-first md:order-none -mt-16 md:-mt-24 relative z-40">
             <Image
               src="/branding/LogoLBrojo.png"
@@ -177,7 +173,6 @@ function Footer() {
             />
           </div>
 
-          {/* Columna Derecha: Info */}
           <div className="flex flex-col items-center text-center md:items-end gap-1 text-sm" style={{ fontFamily: 'var(--font-montserrat)' }}>
             <p className="text-lg font-bold tracking-wide mb-1">
               Horarios
@@ -192,7 +187,6 @@ function Footer() {
 
         </div>
 
-        {/* Separador sutil y Copyright */}
         <div className="mt-8 pt-4 flex flex-col items-center gap-3">
           <div className="w-24 h-[1px] bg-white/30" />
 
@@ -209,44 +203,31 @@ function Footer() {
   )
 }
 
-// ── Page ─────────────────────────────────────────────────────────────────────
 export default function Page() {
   return (
     <>
-      {/* Navbar fixed — fondo crema */}
-      <Navbar />
 
-      {/* pt-16 md:pt-20 compensa la altura de la navbar fixed */}
+      <Navbar />
       <main className="pt-16 md:pt-20">
 
-        {/* 1. Hero — dos columnas, fondo crema */}
         <Hero />
 
-        {/* 2. Franja*/}
         <CheckerStrip />
 
-        {/* 3. Carrusel "Nuestras Delicias" */}
         <BurgerCarousel />
 
-        {/* 4. Franja */}
         <CheckerStrip />
 
-        {/* 5. Menú interactivo */}
         <MenuSection />
 
-        {/* 6. Sección Nosotros & Eventos */}
         <Nosotros />
 
-        {/* 7. Zonas de entrega */}
         <Ubicacion />
 
-        {/* 8. Franja */}
         <CheckerStrip />
 
-        {/* 9. Footer */}
         <Footer />
 
-        {/* 10. Carrito */}
         <Carrito />
       </main>
     </>

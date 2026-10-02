@@ -1,10 +1,8 @@
 'use client'
-// Panel de menú
 import { useState } from 'react'
 import Image from 'next/image'
 import { useCart } from '@/context/CartContext'
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 type Category = 'Hamburguesas' | 'Combos' | 'Adicionales'
 
 interface MenuItem {
@@ -15,18 +13,12 @@ interface MenuItem {
   category: Category
   image: string
   badge?: string
-  /**
-   * OPCIONAL, para cuando haya más burgers: los ítems con el mismo `group`
-   * comparten una fila con selector Simple/Doble. Hoy ningún ítem lo usa.
-   */
   group?: string
-  /** Etiqueta del selector (Simple, Doble...). Solo se usa junto con `group`. */
   size?: string
 }
 
-// ─── Menu Data ────────────────────────────────────────────────────────────────
 const MENU_ITEMS: MenuItem[] = [
-  // ── Hamburguesas (sin papas) ────────────────────────────────────────────────
+  //Hamburguesas (sin papas) 
   {
     id: 'cheese-simple',
     name: 'Cheeseburger simple',
@@ -85,7 +77,7 @@ const MENU_ITEMS: MenuItem[] = [
     image: '/menu/SecretMenu.png',
     badge: 'Secret Menu',
   },
-  // ── Combos (con papas) ──────────────────────────────────────────────────────
+  //Combos (con papas)
   {
     id: 'starter-pack',
     name: 'Starter Pack',
@@ -153,7 +145,7 @@ const MENU_ITEMS: MenuItem[] = [
     image: '/menu/SecretMenu.png',
     badge: 'Secret Menu',
   },
-  // ── Adicionales ─────────────────────────────────────────────────────────────
+  //Adicionales 
   {
     id: 'coca-cola',
     name: 'Coca Cola',
@@ -222,8 +214,6 @@ const CATEGORY_NOTES: Record<Category, React.ReactNode> = {
   Adicionales: <>Ahora sumamos <strong>bebidas</strong>.</>,
 }
 
-// ─── Cart adapter ─────────────────────────────────────────────────────────────
-// updateQuantity(id, delta): delta -1 resta; cuando quantity llega a 0 CartContext lo elimina.
 function useMenuCart() {
   const { items, addToCart, updateQuantity } = useCart()
 
@@ -234,7 +224,6 @@ function useMenuCart() {
   }
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 function formatPrice(price: number): string {
   return new Intl.NumberFormat('es-AR', {
     style: 'currency',
@@ -244,7 +233,6 @@ function formatPrice(price: number): string {
   }).format(price)
 }
 
-/** Agrupa ítems que comparten `group` y respeta el orden original. Sin `group`, cada ítem es su propia fila. */
 function groupItems(items: MenuItem[]): MenuItem[][] {
   const map = new Map<string, MenuItem[]>()
   for (const item of items) {
@@ -254,7 +242,7 @@ function groupItems(items: MenuItem[]): MenuItem[][] {
   return Array.from(map.values())
 }
 
-// ─── Icons ────────────────────────────────────────────────────────────────────
+//Icons 
 const iconProps = {
   viewBox: '0 0 24 24',
   className: 'h-5 w-5',
@@ -281,11 +269,11 @@ function MinusIcon() {
   )
 }
 
-// Estilos
+//Estilos
 const CARD_BG = 'bg-[color-mix(in_srgb,var(--cream)_45%,white)]'
 const HARD_SHADOW = 'shadow-[2px_2px_0_var(--brown)]'
 
-// ─── MenuRow ──────────────────────────────────────────────────────────────────
+//MenuRow
 interface MenuRowProps {
   variants: MenuItem[]
   index: number
@@ -295,7 +283,6 @@ interface MenuRowProps {
 }
 
 function MenuRow({ variants, index, getQuantity, onAdd, onRemove }: MenuRowProps) {
-  // Con variantes, arranca seleccionada la que tenga badge (ej. "La más pedida").
   const [selectedIndex, setSelectedIndex] = useState(() => {
     const featured = variants.findIndex((v) => v.badge)
     return featured >= 0 ? featured : 0
@@ -310,7 +297,6 @@ function MenuRow({ variants, index, getQuantity, onAdd, onRemove }: MenuRowProps
   const titleColor = isSecret ? 'var(--cream)' : 'var(--brown)'
   const descColor = isSecret ? 'color-mix(in srgb, var(--cream) 80%, transparent)' : 'var(--gray-text)'
   const priceColor = isSecret ? 'var(--cream)' : 'var(--red)'
-  // Reposo: borde fino y sombra suave. La sombra dura queda solo para el hover.
   const borderClass = isSecret
     ? 'border-2 border-[color:var(--brown)]'
     : 'border border-[color:color-mix(in_srgb,var(--brown)_18%,transparent)]'
@@ -326,7 +312,6 @@ function MenuRow({ variants, index, getQuantity, onAdd, onRemove }: MenuRowProps
       className={`menu-card menu-card-enter flex gap-3 rounded-3xl p-3 md:gap-4 md:p-4 ${borderClass} ${restShadow} ${isSecret ? 'bg-[var(--brown)]' : CARD_BG}`}
       style={{ animationDelay: `${index * 60}ms`, '--card-shadow': hoverShadowColor } as React.CSSProperties}
     >
-      {/* Texto */}
       <div className="flex min-w-0 flex-1 flex-col">
         <h3 className="text-xl md:text-2xl leading-tight" style={{ fontFamily: 'var(--font-lilita)', color: titleColor }}>
           {title}
@@ -365,7 +350,6 @@ function MenuRow({ variants, index, getQuantity, onAdd, onRemove }: MenuRowProps
         </p>
       </div>
 
-      {/* Foto + control de cantidad */}
       <div className="relative h-32 w-32 shrink-0 self-start md:h-40 md:w-40">
         <div className="relative h-full w-full overflow-hidden rounded-2xl bg-[var(--cream)]">
           <Image key={item.id} src={item.image} alt={item.name} fill sizes="(max-width: 768px) 224px, 256px" quality={95} className="menu-card-img object-cover" />
@@ -424,7 +408,6 @@ function MenuRow({ variants, index, getQuantity, onAdd, onRemove }: MenuRowProps
   )
 }
 
-// ─── MenuSection (Client) ─────────────────────────────────────────────────────
 export default function MenuSection() {
   const [activeCategory, setActiveCategory] = useState<Category>('Hamburguesas')
   const { getQuantity, add, remove } = useMenuCart()
@@ -434,7 +417,6 @@ export default function MenuSection() {
   return (
     <section
       id="menu"
-      // pb grande: deja lugar para la barra fija del pedido
       className="px-4 pr-6 pb-28 pt-8 md:px-10 md:pb-28 md:pt-14 lg:px-20"
       style={{ backgroundColor: 'var(--cream)' }}
       aria-labelledby="menu-heading"
@@ -448,7 +430,6 @@ export default function MenuSection() {
           ¡Vení a Lootear!
         </h2>
 
-        {/* Tabs sticky en una sola línea. Ajustá --header-h a la altura real de tu navbar. */}
         <div
           className="sticky z-20 -mx-4 -mr-6 px-4 py-2 md:mx-0 md:mr-0 md:px-0"
           style={{ top: 'var(--header-h, 64px)', backgroundColor: 'var(--cream)' }}
@@ -473,7 +454,6 @@ export default function MenuSection() {
                   style={{ fontFamily: 'var(--font-montserrat)' }}
                 >
                   {cat}
-                  {/* Punto de novedad: las bebidas viven en Adicionales */}
                   {cat === 'Adicionales' && (
                     <span
                       aria-hidden="true"
@@ -494,7 +474,6 @@ export default function MenuSection() {
           {CATEGORY_NOTES[activeCategory]}
         </p>
 
-        {/* Mobile: 1 columna de tarjetas. Desktop: tarjetas en 2 columnas. */}
         <div id="menu-panel" role="tabpanel" aria-labelledby={`tab-${activeCategory.toLowerCase()}`}>
           <ul className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-6">
             {groups.map((variants, i) => (

@@ -1,15 +1,4 @@
 'use client'
-
-// ─────────────────────────────────────────────────────────────────────────────
-//  DeliveryMapRadial.tsx
-//  Mapa de envíos con zonas RADIALES (círculos concéntricos desde el local).
-//
-//  Sistema alternativo a DeliveryMap.tsx (polígonos por barrio).
-//  Activo en Carrito.tsx. Para volver al sistema de polígonos, reemplazá
-//  el import en Carrito.tsx:
-//    import DeliveryMapRadial → import DeliveryMap
-// ─────────────────────────────────────────────────────────────────────────────
-
 import { useState, useCallback, useRef } from 'react'
 import {
     GoogleMap,
@@ -20,7 +9,6 @@ import {
 } from '@react-google-maps/api'
 import { RADIAL_ZONES, LOCAL_POSITION, MAX_KM } from '@/config/deliveryZonesRadial'
 
-// ─── Haversine: distancia real entre dos puntos en la Tierra (en km) ──────────
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
     const R = 6371
     const dLat = ((lat2 - lat1) * Math.PI) / 180
@@ -38,10 +26,9 @@ function getZoneByDistance(distKm: number) {
     for (const z of RADIAL_ZONES) {
         if (distKm <= z.maxKm) return z
     }
-    return null // fuera del radio máximo
+    return null
 }
 
-// ─── Constantes del mapa ──────────────────────────────────────────────────────
 // Fuera del componente para evitar el warning de @react-google-maps/api
 const LIBRARIES: ('places')[] = ['places']
 
@@ -59,12 +46,10 @@ const MAP_OPTIONS: google.maps.MapOptions = {
     ],
 }
 
-// Props  
 interface DeliveryMapRadialProps {
     onAddressChange: (address: string, deliveryCost: number | null, outOfRange: boolean) => void
 }
 
-// Componente 
 export default function DeliveryMapRadial({ onAddressChange }: DeliveryMapRadialProps) {
     const [userMarker, setUserMarker] = useState<{ lat: number; lng: number } | null>(null)
     const [selectedZone, setSelectedZone] = useState<typeof RADIAL_ZONES[0] | null>(null)
@@ -83,7 +68,7 @@ export default function DeliveryMapRadial({ onAddressChange }: DeliveryMapRadial
         region: 'AR',
     })
 
-    // Calcular distancia y asignar zona 
+    //Calcular distancia y asignar zona 
     const detectZone = useCallback((lat: number, lng: number, address: string) => {
         setUserMarker({ lat, lng })
         setHasSelection(true)
@@ -104,20 +89,17 @@ export default function DeliveryMapRadial({ onAddressChange }: DeliveryMapRadial
         }
     }, [onAddressChange])
 
-    // Autocomplado 
+    //Autocomplado 
     const handlePlaceChanged = useCallback(() => {
         const place = autocompleteRef.current?.getPlace()
         if (!place?.geometry?.location) return
         const lat = place.geometry.location.lat()
         const lng = place.geometry.location.lng()
-        // Usamos el texto que escribió el usuario (más completo para barrios privados).
-        // formatted_address de Google suele recortar nombres de countries/barrios privados.
         const userTyped = inputRef.current?.value?.trim()
         const address = userTyped || place.formatted_address || ''
         detectZone(lat, lng, address)
     }, [detectZone])
 
-    // Click en el mapa: geocoding inverso 
     const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
         if (!e.latLng) return
         const lat = e.latLng.lat()
@@ -136,7 +118,6 @@ export default function DeliveryMapRadial({ onAddressChange }: DeliveryMapRadial
         )
     }, [detectZone])
 
-    // Limpiar selección 
     const handleClear = useCallback(() => {
         setUserMarker(null)
         setSelectedZone(null)
@@ -147,7 +128,6 @@ export default function DeliveryMapRadial({ onAddressChange }: DeliveryMapRadial
         onAddressChange('', null, false)
     }, [onAddressChange])
 
-    // Estados de carga/error
     if (loadError) {
         return (
             <div
@@ -177,7 +157,6 @@ export default function DeliveryMapRadial({ onAddressChange }: DeliveryMapRadial
         )
     }
 
-    // Render 
     return (
         <div className="space-y-3">
 
@@ -212,7 +191,6 @@ export default function DeliveryMapRadial({ onAddressChange }: DeliveryMapRadial
                 </div>
             </Autocomplete>
 
-            {/* Mapa con círculos */}
             <div className="rounded-xl overflow-hidden border border-neutral-200" style={{ height: '240px' }}>
                 <GoogleMap
                     mapContainerStyle={{ width: '100%', height: '100%' }}
@@ -222,7 +200,6 @@ export default function DeliveryMapRadial({ onAddressChange }: DeliveryMapRadial
                     onLoad={map => { mapRef.current = map }}
                     onClick={handleMapClick}
                 >
-                    {/* Círculos de zona — de mayor a menor */}
                     {[...RADIAL_ZONES].reverse().map(zone => (
                         <Circle
                             key={zone.maxKm}
@@ -239,7 +216,6 @@ export default function DeliveryMapRadial({ onAddressChange }: DeliveryMapRadial
                         />
                     ))}
 
-                    {/* Marcador del local*/}
                     <Marker
                         position={LOCAL_POSITION}
                         title="Loot Burguers"
@@ -305,7 +281,6 @@ export default function DeliveryMapRadial({ onAddressChange }: DeliveryMapRadial
                 </div>
             )}
 
-            {/* Zona detectada */}
             {hasSelection && !outOfRange && selectedZone && (
                 <div
                     className="flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold"
